@@ -1,0 +1,83 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  min-width: 0;
+}
+
+.logo__mark {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  flex-shrink: 0;
+}
+
+.logo--light .logo__mark {
+  background: var(--color-charcoal);
+  color: var(--color-off-white);
+}
+
+.logo--dark .logo__mark {
+  background: var(--color-off-white);
+  color: var(--color-charcoal);
+}
+
+.logo__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.logo__name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.logo--light .logo__name {
+  color: var(--charcoal-green);
+}
+
+.logo--dark .logo__name {
+  color: var(--color-white);
+}
+
+.logo__tag {
+  margin-top: 2px;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.logo--light .logo__tag {
+  color: var(--color-charcoal);
+}
+
+.logo--dark .logo__tag {
+  color: rgba(var(--off-white-rgb), 0.78);
+}
+
+@media (max-width: 480px) {
+  .logo {
+    gap: 10px;
+  }
+
+  .logo__mark {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .logo__name {
+    font-size: 18px;
+  }
+}

@@ -1,0 +1,14 @@
+.placeholder {
+  min-height: 56vh;
+  padding-block: var(--section-y);
+}
+
+.placeholder .btn {
+  margin-top: var(--space-32);
+}
+
+@media (max-width: 600px) {
+  .placeholder .btn {
+    width: 100%;
+  }
+}

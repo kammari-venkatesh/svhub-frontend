@@ -1,0 +1,132 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color var(--transition),
+    color var(--transition),
+    border-color var(--transition),
+    transform var(--transition);
+}
+
+.btn--md {
+  min-height: 48px;
+  padding: 12px 28px;
+  font-size: 13px;
+}
+
+.btn--sm {
+  min-height: 40px;
+  padding: 8px 18px;
+  font-size: 12px;
+}
+
+.btn--lg {
+  min-height: 56px;
+  padding: 16px 36px;
+  font-size: 14px;
+}
+
+.btn--primary {
+  background: var(--color-sv-green);
+  color: var(--color-white);
+}
+
+.btn--primary:hover {
+  background: var(--color-leaf-green);
+}
+
+.btn--espresso {
+  background: var(--color-espresso);
+  color: var(--color-white);
+}
+
+.btn--espresso:hover {
+  background: var(--charcoal-green);
+}
+
+.btn--terracotta {
+  background: var(--color-terracotta);
+  color: var(--color-white);
+}
+
+.btn--terracotta:hover {
+  background: var(--espresso-brown);
+}
+
+.btn--secondary {
+  background: transparent;
+  border-color: var(--color-charcoal);
+  color: var(--color-charcoal);
+}
+
+.btn--secondary:hover {
+  background: var(--color-charcoal);
+  color: var(--color-white);
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: rgba(var(--off-white-rgb), 0.7);
+  color: var(--color-white);
+}
+
+.btn--ghost:hover {
+  background: var(--color-white);
+  color: var(--color-charcoal);
+}
+
+.btn--inverse {
+  background: var(--color-white);
+  color: var(--color-charcoal);
+}
+
+.btn--inverse:hover {
+  background: var(--color-off-white);
+  color: var(--color-charcoal);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn svg {
+  transition: transform var(--transition);
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn:hover:not(:disabled) svg {
+  transform: translateX(3px);
+}
+
+@media (max-width: 600px) {
+  .btn--lg {
+    min-height: 52px;
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 13px;
+  }
+}
+
+@media (hover: none) {
+  .btn:hover:not(:disabled) {
+    transform: none;
+  }
+
+  .btn:hover:not(:disabled) svg {
+    transform: none;
+  }
+}

@@ -1,0 +1,135 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  width: 100%;
+  padding-top: var(--safe-top);
+  background: var(--white);
+  border-bottom: 1px solid var(--line);
+}
+
+.navbar__inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+  max-width: 1280px;
+  min-height: 72px;
+  margin-inline: auto;
+  padding: 12px var(--pad-x);
+  padding-left: max(var(--pad-x), var(--safe-left));
+  padding-right: max(var(--pad-x), var(--safe-right));
+}
+
+.navbar__pill {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--white);
+}
+
+.navbar__link {
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+.navbar__link:hover {
+  color: var(--charcoal-green);
+}
+
+.navbar__link--active {
+  background: var(--charcoal-green);
+  color: var(--off-white);
+}
+
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+.navbar__icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--charcoal-green);
+  border-radius: 999px;
+}
+
+.navbar__icon:hover {
+  background: rgba(var(--charcoal-rgb), 0.08);
+}
+
+.navbar__badge {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--terracotta);
+  color: var(--white);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 16px;
+  text-align: center;
+}
+
+.navbar__menu {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  color: var(--charcoal-green);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+@media (max-width: 1100px) {
+  .navbar__pill,
+  .navbar__icon--desktop {
+    display: none;
+  }
+
+  .navbar__inner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 64px;
+    padding-block: 8px;
+  }
+
+  .navbar__menu {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar__menu {
+    padding: 0 8px;
+    font-size: 12px;
+  }
+}
