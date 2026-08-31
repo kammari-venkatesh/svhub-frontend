@@ -1,0 +1,501 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { products } from '../../data/products.js'
+import { storefronts } from '../../data/storefronts.js'
+import {
+  PAGE_SIZE,
+  countActiveFilters,
+  parseShopParams,
+  queryShop,
+  shopIntro,
+  shopParamsToSearch,
+  sortOptions,
+} from '../../data/shop.js'
+import ShopFilters from './ShopFilters.jsx'
+import ShopProduct from './ShopProduct.jsx'
+import ShopSheet from './ShopSheet.jsx'
+import './Shop.css'
+
+const HOUSES = [{ id: 'all', label: 'All' }, ...storefronts.map((house) => ({ id: house.slug, label: house.name }))]
+
+function layoutsFor(count) {
+  const layouts = []
+
+  while (layouts.length < count) {
+    const left = count - layouts.length
+
+    if (left >= 7) {
+      layouts.push('lead', 'stack', 'stack', 'tile', 'tile', 'tile', 'wide')
+      continue
+    }
+    if (left === 6) {
+      layouts.push('lead', 'stack', 'stack', 'tile', 'tile', 'tile')
+      continue
+    }
+    if (left === 5) {
+      layouts.push('feature', 'feature', 'tile', 'tile', 'tile')
+      continue
+    }
+    if (left === 4) {
+      layouts.push('feature', 'feature', 'feature', 'feature')
+      continue
+    }
+    if (left === 3) {
+      layouts.push('lead', 'stack', 'stack')
+      continue
+    }
+    if (left === 2) {
+      layouts.push('feature', 'feature')
+      continue
+    }
+
+    layouts.push('tile')
+  }
+
+  return layouts
+}
+
+function Arrow({ size = 14 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M3 8h10M9.5 4.5 13 8l-3.5 3.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function pagerPages(current, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+
+  const pages = [1]
+  const start = Math.max(2, current - 1)
+  const end = Math.min(total - 1, current + 1)
+
+  if (start > 2) pages.push('ellipsis-start')
+  for (let n = start; n <= end; n += 1) pages.push(n)
+  if (end < total - 1) pages.push('ellipsis-end')
+  pages.push(total)
+  return pages
+}
+
+function FilterIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M2.5 3.5h11M4.5 8h7M6.5 12.5h3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+function SortIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M4 5.5 6.5 3 9 5.5M6.5 3v10M12 10.5 9.5 13 7 10.5M9.5 13V3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function splitTitle(title) {
+  const comma = title.indexOf(',')
+  if (comma === -1) return title
+
+  return (
+    <>
+      {title.slice(0, comma + 1)}
+      <br />
+      {title.slice(comma + 1).trim()}
+    </>
+  )
+}
+
+function ProductSkeleton({ layout = 'tile' }) {
+  return (
+    <div className={`shop-skel shop-skel--${layout}`} aria-hidden="true">
+      <span className="shop-skel__media" />
+      <span className="shop-skel__line shop-skel__line--type" />
+      <span className="shop-skel__line shop-skel__line--name" />
+      <span className="shop-skel__line shop-skel__line--price" />
+    </div>
+  )
+}
+
+function Shop() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const filters = useMemo(() => parseShopParams(searchParams), [searchParams])
+  const [queryDraft, setQueryDraft] = useState(filters.q)
+  const [sheet, setSheet] = useState(null)
+  const [booting, setBooting] = useState(true)
+  const mainRef = useRef(null)
+  const pageReady = useRef(false)
+
+  const results = useMemo(() => queryShop(filters), [filters])
+  const totalPages = Math.max(1, Math.ceil(results.length / PAGE_SIZE))
+  const page = Math.min(filters.page || 1, totalPages)
+  const start = results.length === 0 ? 0 : (page - 1) * PAGE_SIZE
+  const shown = results.slice(start, start + PAGE_SIZE)
+  const rangeStart = results.length === 0 ? 0 : start + 1
+  const rangeEnd = start + shown.length
+  const activeCount = countActiveFilters(filters)
+  const sortLabel = sortOptions.find((option) => option.id === filters.sort)?.label ?? 'Featured'
+  const countLabel = `${results.length} ${results.length === 1 ? 'product' : 'products'}`
+  const catalogMeta = `${products.length} products · ${storefronts.length} houses`
+  const shownLayouts = useMemo(() => layoutsFor(shown.length), [shown.length])
+  const bootLayouts = useMemo(() => layoutsFor(6), [])
+  const pages = pagerPages(page, totalPages)
+
+  const applyFilters = useCallback(
+    (next) => {
+      setSearchParams(shopParamsToSearch(next), { replace: true })
+    },
+    [setSearchParams],
+  )
+
+  function handleFilterChange(next) {
+    applyFilters({ ...next, q: queryDraft, page: 1 })
+  }
+
+  function setPage(nextPage) {
+    applyFilters({ ...filters, q: queryDraft, page: nextPage })
+  }
+
+  function setHouse(storefront) {
+    handleFilterChange({
+      ...filters,
+      storefront,
+      categoryIds:
+        storefront === 'all'
+          ? []
+          : filters.categoryIds.filter((id) => {
+              const house = storefronts.find((item) => item.slug === storefront)
+              return house?.categorySlugs.includes(id)
+            }),
+    })
+  }
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  useEffect(() => {
+    setQueryDraft(filters.q)
+  }, [filters.q])
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      if (queryDraft.trim() === filters.q) return
+      applyFilters({ ...filters, q: queryDraft, page: 1 })
+    }, 220)
+
+    return () => window.clearTimeout(timer)
+  }, [queryDraft, filters, applyFilters])
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setBooting(false), 160)
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    if (!pageReady.current) {
+      pageReady.current = true
+      return
+    }
+    mainRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [page])
+
+  useEffect(() => {
+    if (booting || results.length === 0) return
+    if (filters.page > totalPages) {
+      applyFilters({ ...filters, q: queryDraft, page: totalPages })
+    }
+  }, [booting, filters, queryDraft, results.length, totalPages, applyFilters])
+
+  function clearFilters() {
+    setQueryDraft('')
+    applyFilters({
+      q: '',
+      storefront: 'all',
+      categoryIds: [],
+      price: 'all',
+      availability: 'all',
+      sort: filters.sort,
+    })
+  }
+
+  return (
+    <section className="shop shop--market" aria-labelledby="shop-heading">
+      <span className="shop__grain" aria-hidden="true" />
+
+      <header className="shop__intro">
+        <div className="shop__container shop__intro-grid">
+          <div className="shop__intro-copy">
+            <p className="shop__eyebrow">{shopIntro.eyebrow}</p>
+            <h1 id="shop-heading" className="shop__title">
+              {splitTitle(shopIntro.title)}
+            </h1>
+            <p className="shop__note">
+              <span>Curated for everyday</span>
+              <svg viewBox="0 0 168 14" fill="none" aria-hidden="true">
+                <path
+                  d="M2.4 9.6c18.8-4.8 36.2 2.8 55.1.4 16.6-2.1 31.8-6.6 48.4-4.2 14.2 2 27.6 5.8 42.6 2.4 7.4-1.7 14.2-4.2 17.8-1.6"
+                  stroke="currentColor"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </p>
+          </div>
+
+          <div className="shop__intro-aside">
+            <p className="shop__copy">{shopIntro.copy}</p>
+            <p className="shop__meta">{catalogMeta}</p>
+          </div>
+        </div>
+
+        <div className="shop__container">
+          <nav className="shop__houses" aria-label="Shop by house">
+            {HOUSES.map((house, index) => (
+              <button
+                key={house.id}
+                type="button"
+                className={`shop__house${filters.storefront === house.id ? ' is-active' : ''}`}
+                aria-pressed={filters.storefront === house.id}
+                onClick={() => setHouse(house.id)}
+              >
+                <span className="shop__house-index">{String(index + 1).padStart(2, '0')}</span>
+                {house.label}
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        <div className="shop__container">
+          <label className="shop__mobile-search" htmlFor="shop-mobile-search">
+            <span>Search products</span>
+            <input
+              id="shop-mobile-search"
+              type="search"
+              placeholder="Search rice, pickles, soaps…"
+              value={queryDraft}
+              onChange={(event) => setQueryDraft(event.target.value)}
+              autoComplete="off"
+            />
+          </label>
+        </div>
+      </header>
+
+      <div className="shop__dock" aria-label="Shop controls">
+        <button
+          type="button"
+          className="shop__dock-btn"
+          aria-haspopup="dialog"
+          aria-expanded={sheet === 'filters'}
+          onClick={() => setSheet('filters')}
+        >
+          <FilterIcon />
+          Filter{activeCount ? ` · ${activeCount}` : ''}
+        </button>
+        <button
+          type="button"
+          className="shop__dock-btn"
+          aria-haspopup="dialog"
+          aria-expanded={sheet === 'sort'}
+          onClick={() => setSheet('sort')}
+        >
+          <SortIcon />
+          Sort
+        </button>
+        <p className="shop__dock-count" aria-live="polite">
+          {results.length ? `${rangeStart}–${rangeEnd} of ${results.length}` : countLabel}
+        </p>
+      </div>
+
+      <div className="shop__container shop__layout">
+        <aside className="shop__sidebar" aria-label="Product filters">
+          <div className="shop__sidebar-head">
+            <p className="shop__sidebar-title">Filters</p>
+            {activeCount ? (
+              <button type="button" className="shop__text-btn" onClick={clearFilters}>
+                Clear all
+              </button>
+            ) : null}
+          </div>
+          <ShopFilters
+            filters={filters}
+            searchValue={queryDraft}
+            onSearch={setQueryDraft}
+            onChange={handleFilterChange}
+          />
+        </aside>
+
+        <div className="shop__main" ref={mainRef}>
+          <div className="shop__toolbar">
+            <p className="shop__count" aria-live="polite">
+              {results.length
+                ? `Showing ${rangeStart}–${rangeEnd} of ${results.length}`
+                : countLabel}
+            </p>
+
+            <label className="shop__sort" htmlFor="shop-sort">
+              <span>Sort by</span>
+              <select
+                id="shop-sort"
+                value={filters.sort}
+                onChange={(event) => handleFilterChange({ ...filters, sort: event.target.value })}
+              >
+                {sortOptions.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          {booting ? (
+            <ul className="shop__grid shop__grid--editorial" aria-busy="true" aria-label="Loading products">
+              {bootLayouts.map((layout, index) => (
+                <li key={index} className={`shop__cell shop__cell--${layout}`}>
+                  <ProductSkeleton layout={layout} />
+                </li>
+              ))}
+            </ul>
+          ) : results.length === 0 ? (
+            <div className="shop__empty">
+              <p className="shop__empty-eyebrow">No matches</p>
+              <h2>We couldn’t find what you’re looking for.</h2>
+              <p>Try another search, or clear the filters to see everything in the shop.</p>
+              <button type="button" className="shop__empty-btn" onClick={clearFilters}>
+                Clear filters
+                <Arrow />
+              </button>
+            </div>
+          ) : (
+            <>
+              <ul className="shop__grid shop__grid--editorial" key={searchParams.toString()} aria-label="Products">
+                {shown.map((product, index) => {
+                  const layout = shownLayouts[index] ?? 'tile'
+                  return (
+                    <li key={product.id} className={`shop__cell shop__cell--${layout}`}>
+                      <ShopProduct product={product} layout={layout} index={index} />
+                    </li>
+                  )
+                })}
+              </ul>
+
+              <div className="shop__footer">
+                <p className="shop__shown">
+                  Showing {rangeStart}–{rangeEnd} of {results.length}
+                </p>
+                {totalPages > 1 ? (
+                  <nav className="shop__pager" aria-label="Product pages">
+                    <button
+                      type="button"
+                      className="shop__page shop__page--dir"
+                      disabled={page <= 1}
+                      onClick={() => setPage(page - 1)}
+                    >
+                      Previous
+                    </button>
+                    {pages.map((item) =>
+                      typeof item === 'string' ? (
+                        <span key={item} className="shop__page-gap" aria-hidden="true">
+                          …
+                        </span>
+                      ) : (
+                        <button
+                          key={item}
+                          type="button"
+                          className={`shop__page${item === page ? ' is-current' : ''}`}
+                          aria-current={item === page ? 'page' : undefined}
+                          onClick={() => setPage(item)}
+                        >
+                          {item}
+                        </button>
+                      ),
+                    )}
+                    <button
+                      type="button"
+                      className="shop__page shop__page--dir"
+                      disabled={page >= totalPages}
+                      onClick={() => setPage(page + 1)}
+                    >
+                      Next
+                    </button>
+                  </nav>
+                ) : null}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      <ShopSheet
+        open={sheet === 'filters'}
+        title="Filters"
+        labelledBy="shop-filter-sheet"
+        onClose={() => setSheet(null)}
+      >
+        <div className="shop__sheet-tools">
+          <p className="shop__sheet-meta">{countLabel}</p>
+          {activeCount ? (
+            <button type="button" className="shop__text-btn" onClick={clearFilters}>
+              Clear all
+            </button>
+          ) : null}
+        </div>
+        <ShopFilters
+          filters={filters}
+          searchValue={queryDraft}
+          onSearch={setQueryDraft}
+          onChange={handleFilterChange}
+          idPrefix="shop-sheet"
+        />
+      </ShopSheet>
+
+      <ShopSheet
+        open={sheet === 'sort'}
+        title="Sort"
+        labelledBy="shop-sort-sheet"
+        onClose={() => setSheet(null)}
+      >
+        <p className="shop__sheet-current">Current · {sortLabel}</p>
+        <div className="shop-filters__choices">
+          {sortOptions.map((option) => (
+            <label
+              key={option.id}
+              className={`shop-filters__choice shop-filters__choice--row${filters.sort === option.id ? ' is-selected' : ''}`}
+            >
+              <input
+                type="radio"
+                name="shop-sheet-sort"
+                checked={filters.sort === option.id}
+                onChange={() => {
+                  applyFilters({ ...filters, q: queryDraft, sort: option.id, page: 1 })
+                  setSheet(null)
+                }}
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
+        </div>
+      </ShopSheet>
+    </section>
+  )
+}
+
+export default Shop

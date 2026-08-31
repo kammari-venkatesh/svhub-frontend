@@ -140,9 +140,9 @@
 
 .close__actions {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 28px;
   margin-top: 32px;
 }
 
@@ -150,38 +150,37 @@
 .close__secondary {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  color: var(--off-white);
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
 }
 
 .close__primary {
+  gap: 10px;
   min-height: 52px;
-  padding: 8px 0 10px;
-  font-size: 13px;
-  letter-spacing: 0.16em;
-  border-bottom: 1px solid rgba(var(--off-white-rgb), 0.55);
+  padding: 12px 22px 12px 24px;
+  border-radius: var(--radius-pill);
+  background: var(--off-white);
+  color: var(--espresso-brown);
+  font-size: 12px;
+  letter-spacing: 0.14em;
   transition:
-    border-color var(--close-ease),
-    color var(--close-ease);
+    background-color var(--close-ease),
+    gap var(--close-ease);
 }
 
 .close__secondary {
+  gap: 8px;
   min-height: 44px;
   padding: 6px 0;
-  color: rgba(var(--off-white-rgb), 0.78);
+  color: rgba(var(--off-white-rgb), 0.72);
   font-size: 12px;
+  font-weight: 500;
   letter-spacing: 0.14em;
-  border-bottom: 1px solid transparent;
-  background-image: linear-gradient(currentColor, currentColor);
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  background-size: 0 1px;
+  border-bottom: 1px solid rgba(var(--off-white-rgb), 0.28);
   transition:
     color var(--close-ease),
-    background-size var(--close-ease);
+    border-color var(--close-ease);
 }
 
 .close__primary svg,
@@ -192,13 +191,14 @@
 
 .close__primary:hover,
 .close__primary:focus-visible {
-  border-bottom-color: var(--off-white);
+  background: #e8c9a8;
+  gap: 14px;
 }
 
 .close__secondary:hover,
 .close__secondary:focus-visible {
   color: var(--off-white);
-  background-size: 100% 1px;
+  border-bottom-color: var(--off-white);
 }
 
 .close__primary:hover svg,
@@ -303,8 +303,8 @@
     grid-template-columns: minmax(0, 1.2fr) minmax(180px, 0.38fr);
     align-items: end;
     column-gap: clamp(40px, 6vw, 96px);
-    min-height: 68vh;
-    padding-block: 96px 88px;
+  min-height: 78vh;
+  padding-block: 108px 96px;
   }
 
   .close__watermark {
@@ -329,15 +329,15 @@
 
   .close__actions {
     flex-direction: row;
-    align-items: flex-end;
+    align-items: center;
     gap: 28px;
     margin-top: 40px;
   }
 
   .close__primary {
-    min-height: 48px;
-    font-size: 13px;
-    letter-spacing: 0.18em;
+    min-height: 52px;
+    font-size: 12px;
+    letter-spacing: 0.16em;
   }
 
   .close__seal {

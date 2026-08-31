@@ -6,21 +6,6 @@ import { getStorefront } from '../data/storefronts.js'
 import './PlaceholderPage.css'
 
 const copy = {
-  '/shop': {
-    eyebrow: 'Shop',
-    title: 'The full shop is being prepared',
-    text: 'Featured products are already on the homepage. The complete catalogue will live here.',
-  },
-  '/nutri-hub': {
-    eyebrow: 'Nutri-Hub',
-    title: 'Organic food and traditional products',
-    text: 'Native rice, thokku, masalas and daily meals will be gathered here.',
-  },
-  '/self-care': {
-    eyebrow: 'Self-Care',
-    title: 'Handmade personal-care products',
-    text: 'Botanical soaps and traditional care will have their own house here.',
-  },
   '/about': {
     eyebrow: 'About',
     title: 'The SV Hub story',

@@ -49,7 +49,7 @@ function CategorySection() {
   return (
     <section
       id="shop-by-category"
-      className="home-section home-section--white categories-section"
+      className="home-section home-section--off categories-section"
       aria-labelledby="categories-heading"
     >
       <div className="home-container">

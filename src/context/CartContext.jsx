@@ -8,21 +8,49 @@ export function CartProvider({ children }) {
   const value = useMemo(() => {
     const count = items.reduce((total, item) => total + item.quantity, 0)
 
-    function addItem(product) {
+    function lineKey(item) {
+      return `${item.id}::${item.weight ?? ''}`
+    }
+
+    function addItem(product, quantity = 1) {
+      const qty = Math.max(1, Number(quantity) || 1)
+
       setItems((current) => {
-        const existing = current.find((item) => item.id === product.id)
+        const key = lineKey(product)
+        const existing = current.find((item) => lineKey(item) === key)
 
         if (existing) {
           return current.map((item) =>
-            item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item,
+            lineKey(item) === key ? { ...item, quantity: item.quantity + qty } : item,
           )
         }
 
-        return [...current, { ...product, quantity: 1 }]
+        return [...current, { ...product, quantity: qty }]
       })
     }
 
-    return { items, count, addItem }
+    function setItemQuantity(product, quantity) {
+      const qty = Math.max(0, Number(quantity) || 0)
+
+      setItems((current) => {
+        const key = lineKey(product)
+        if (qty === 0) return current.filter((item) => lineKey(item) !== key)
+
+        const existing = current.find((item) => lineKey(item) === key)
+        if (existing) {
+          return current.map((item) => (lineKey(item) === key ? { ...item, quantity: qty } : item))
+        }
+
+        return [...current, { ...product, quantity: qty }]
+      })
+    }
+
+    function quantityOf(product) {
+      const key = lineKey(product)
+      return items.find((item) => lineKey(item) === key)?.quantity ?? 0
+    }
+
+    return { items, count, addItem, setItemQuantity, quantityOf }
   }, [items])
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>

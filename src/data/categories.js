@@ -7,7 +7,7 @@ export const categories = [
     slug: 'native-rice',
     storefront: 'nutri-hub',
     image: images.nativeRice,
-    description: 'Indigenous grains grown with care for everyday meals.',
+    description: 'Indigenous grains grown with care for everyday pots of rice, kanji and festive meals.',
     to: '/category/native-rice',
   },
   {
@@ -16,7 +16,7 @@ export const categories = [
     slug: 'pickles',
     storefront: 'nutri-hub',
     image: images.pickles,
-    description: 'Traditional thokku and pickles made in small batches.',
+    description: 'Small-batch thokku and pickles made the way they belong on a South Indian table.',
     to: '/category/pickles',
   },
   {
@@ -25,7 +25,7 @@ export const categories = [
     slug: 'masalas',
     storefront: 'nutri-hub',
     image: images.masalas,
-    description: 'Regional masalas and seasonings for home cooking.',
+    description: 'Regional masalas and seasonings measured for home cooking, not restaurant theatrics.',
     to: '/category/masalas',
   },
   {
@@ -34,7 +34,7 @@ export const categories = [
     slug: 'sweets',
     storefront: 'nutri-hub',
     image: images.sweets,
-    description: 'Time-honoured sweets made with native ingredients.',
+    description: 'Time-honoured sweets made in small batches with native ingredients.',
     to: '/category/sweets',
   },
   {
@@ -43,7 +43,7 @@ export const categories = [
     slug: 'savouries',
     storefront: 'nutri-hub',
     image: images.savouries,
-    description: 'Crisp, homemade-style snacks for everyday sharing.',
+    description: 'Crisp, homemade-style snacks for tea-time and everyday sharing.',
     to: '/category/savouries',
   },
   {
@@ -52,7 +52,7 @@ export const categories = [
     slug: 'daily-meals',
     storefront: 'nutri-hub',
     image: images.meals,
-    description: 'Wholesome meals rooted in South Indian kitchens.',
+    description: 'Wholesome prepared meals rooted in South Indian kitchens.',
     to: '/category/daily-meals',
   },
   {
@@ -61,7 +61,7 @@ export const categories = [
     slug: 'handmade-soaps',
     storefront: 'self-care',
     image: images.handmadeSoaps,
-    description: 'Herbal soaps made by hand with traditional ingredients.',
+    description: 'Herbal soaps made by hand with traditional ingredients for everyday care.',
     to: '/category/handmade-soaps',
   },
 ]

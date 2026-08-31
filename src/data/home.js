@@ -25,7 +25,7 @@ export const housesIntro = {
 
 export const featuredIntro = {
   eyebrow: 'Handpicked For You',
-  title: 'Goodness for Every Day.',
+  title: 'Staples for every day.',
   copy: 'Explore a few of our everyday favourites, rooted in traditional ingredients and made for modern homes.',
   cta: 'Explore All Products',
   ctaTo: '/shop',
@@ -40,7 +40,7 @@ export const editorial = {
     { number: '02', label: 'Native Grains' },
     { number: '03', label: 'Traditional Methods' },
   ],
-  headline: 'Rooted in Tradition, Made for Modern Life.',
+  headline: 'From the grain to the table.',
   storyTitle: 'From Farm to Home.',
   storyCopy:
     'From indigenous grains to traditional recipes, SV Hub brings the goodness of our roots into modern homes — grown with care, made by hand, and meant for everyday tables.',
@@ -66,6 +66,17 @@ export const categoryIntro = {
   eyebrow: 'Shop by Category',
   title: 'Find Goodness Your Way.',
   copy: 'Organic staples, traditional recipes, and handmade care — grouped the way our kitchens and homes use them.',
+}
+
+export const grownIntro = {
+  eyebrow: 'From Farm to Home',
+  title: 'Grown with care. Meant for the kitchen.',
+  copy: 'From indigenous grains to traditional recipes, SV Hub brings the goodness of our roots into modern homes — grown with care, made by hand, and meant for everyday tables.',
+  principles: [
+    { number: '01', title: 'Native grains', copy: 'Native ingredients and recipes rooted in our heritage.' },
+    { number: '02', title: 'Traditional methods', copy: 'Simple ingredients and traditional methods.' },
+    { number: '03', title: 'Everyday tables', copy: 'Sourced with care and brought closer to your kitchen.' },
+  ],
 }
 
 export const whyIntro = {

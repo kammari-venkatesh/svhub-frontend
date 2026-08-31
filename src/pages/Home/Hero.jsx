@@ -4,8 +4,8 @@ import './Hero.css'
 
 function Star({ className }) {
   return (
-    <svg className={className} width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-      <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    <svg className={className} width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+      <path d="M5 1v8M1 5h8" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
     </svg>
   )
 }
@@ -29,7 +29,16 @@ function Hero() {
           <h1>{heroContent.title}</h1>
           <p className="hero__description">{heroContent.copy}</p>
           <Link to={heroContent.ctaTo} className="hero__button">
-            Shop Now <span aria-hidden="true">→</span>
+            Shop Now
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path
+                d="M3 8h10M9 4l4 4-4 4"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </Link>
         </div>
       </div>

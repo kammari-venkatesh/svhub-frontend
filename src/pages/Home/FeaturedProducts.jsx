@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Reveal from '../../components/ui/Reveal.jsx'
-import { useCart } from '../../context/CartContext.jsx'
+import CartStepper from '../../components/ui/CartStepper.jsx'
 import { featuredIntro } from '../../data/home.js'
-import { featuredProducts } from '../../data/products.js'
+import { featuredProducts, productHref } from '../../data/products.js'
 import { getStorefront } from '../../data/storefronts.js'
 import './FeaturedProducts.css'
 
@@ -61,27 +60,10 @@ function FavouritesNote() {
 }
 
 function FeaturedItem({ product, layout }) {
-  const { addItem } = useCart()
-  const [justAdded, setJustAdded] = useState(false)
-  const outOfStock = product.stock === 'out-of-stock'
   const house = getStorefront(product.storefront)
   const showStock = product.stock !== 'in-stock'
   const hasCompare = Boolean(product.originalPrice && product.originalPrice > product.price)
-  const productTo = `/category/${product.category}`
-
-  useEffect(() => {
-    if (!justAdded) return undefined
-    const timer = window.setTimeout(() => setJustAdded(false), 1800)
-    return () => window.clearTimeout(timer)
-  }, [justAdded])
-
-  function handleAdd() {
-    if (outOfStock) return
-    addItem(product)
-    setJustAdded(true)
-  }
-
-  const cartLabel = outOfStock ? 'Out of stock' : justAdded ? 'Added' : 'Add to cart'
+  const productTo = productHref(product)
 
   return (
     <li
@@ -107,6 +89,9 @@ function FeaturedItem({ product, layout }) {
               <span>{product.discount}% off</span>
             </p>
           ) : null}
+          <div className="featured-item__step" onClick={(event) => event.stopPropagation()}>
+            <CartStepper product={product} />
+          </div>
         </div>
 
         <div className="featured-item__body">
@@ -128,16 +113,6 @@ function FeaturedItem({ product, layout }) {
               {stockLabels[product.stock]}
             </p>
           ) : null}
-          <button
-            type="button"
-            className="featured-item__cart"
-            disabled={outOfStock}
-            onClick={handleAdd}
-            aria-live="polite"
-          >
-            <span>{cartLabel}</span>
-            {outOfStock ? null : <Arrow size={13} />}
-          </button>
         </div>
       </article>
     </li>

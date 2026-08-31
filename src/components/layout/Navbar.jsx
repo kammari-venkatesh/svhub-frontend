@@ -1,5 +1,5 @@
-import { NavLink, Link } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { NavLink, Link, useLocation } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
 import Logo from '../brand/Logo.jsx'
 import MobileNav from './MobileNav.jsx'
 import { useCart } from '../../context/CartContext.jsx'
@@ -13,6 +13,15 @@ const links = [
   { to: '/about', label: 'About' },
   { to: '/contact', label: 'Contact' },
 ]
+
+function IconSearch() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M16.2 16.2 20 20" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  )
+}
 
 function IconAccount() {
   return (
@@ -46,7 +55,27 @@ function IconCart() {
 
 function Navbar() {
   const { count } = useCart()
+  const { pathname } = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const menuBtnRef = useRef(null)
+  const wasOpen = useRef(false)
+  const [navPath, setNavPath] = useState(pathname)
+
+  if (navPath !== pathname) {
+    setNavPath(pathname)
+    if (menuOpen) setMenuOpen(false)
+  }
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 28)
+    }
+
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [pathname])
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : ''
@@ -64,12 +93,24 @@ function Navbar() {
     return () => window.removeEventListener('keydown', onKey)
   }, [menuOpen])
 
+  useEffect(() => {
+    if (menuOpen) {
+      wasOpen.current = true
+      return undefined
+    }
+    if (wasOpen.current) {
+      menuBtnRef.current?.focus()
+      wasOpen.current = false
+    }
+    return undefined
+  }, [menuOpen])
+
   return (
-    <header className="navbar">
+    <header className={`navbar${scrolled ? ' navbar--compact' : ''}`}>
       <div className="navbar__inner">
         <Logo />
 
-        <nav className="navbar__pill" aria-label="Primary">
+        <nav className="navbar__links" aria-label="Primary">
           {links.map((link) => (
             <NavLink
               key={link.to}
@@ -85,6 +126,9 @@ function Navbar() {
         </nav>
 
         <div className="navbar__actions">
+          <Link to="/search" className="navbar__icon navbar__icon--desktop" aria-label="Search products">
+            <IconSearch />
+          </Link>
           <Link to="/account" className="navbar__icon navbar__icon--desktop" aria-label="Account">
             <IconAccount />
           </Link>
@@ -93,13 +137,19 @@ function Navbar() {
             {count > 0 && <span className="navbar__badge">{count}</span>}
           </Link>
           <button
+            ref={menuBtnRef}
             type="button"
-            className="navbar__menu"
+            className={`navbar__menu${menuOpen ? ' is-open' : ''}`}
             aria-expanded={menuOpen}
             aria-controls="mobile-nav"
-            onClick={() => setMenuOpen(true)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            onClick={() => setMenuOpen((open) => !open)}
           >
-            Menu
+            <span className="navbar__burger" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
           </button>
         </div>
       </div>

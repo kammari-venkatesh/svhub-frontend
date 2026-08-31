@@ -75,8 +75,7 @@ function FinalCta() {
               <CloseArrow />
             </Link>
             <Link to={finalCta.secondary.to} className="close__secondary">
-              <span>{finalCta.secondary.label}</span>
-              <CloseArrow />
+              {finalCta.secondary.label}
             </Link>
           </div>
         </Reveal>

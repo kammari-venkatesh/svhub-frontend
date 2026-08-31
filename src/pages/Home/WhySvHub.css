@@ -1,7 +1,27 @@
 .why-section {
-  --why-ease: 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  --why-ease: 480ms cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
   overflow-x: hidden;
+  background: var(--cream);
+}
+
+.why__promise-mark {
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  z-index: 0;
+  color: var(--espresso-brown);
+  font-family: var(--font-display);
+  font-size: clamp(88px, 18vw, 220px);
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 0.75;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0.045;
+  pointer-events: none;
+  user-select: none;
+  transform: translate(-50%, -50%);
 }
 
 .why-section .home-container {

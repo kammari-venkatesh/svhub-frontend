@@ -2,7 +2,7 @@
   --voices-ease: 520ms cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
   overflow-x: hidden;
-  background: #faf7f2;
+  background: var(--white);
 }
 
 .voices .home-container {

@@ -166,10 +166,13 @@ function WhySvHub() {
   return (
     <section
       id="why-sv-hub"
-      className="home-section home-section--off why-section"
+      className="home-section why-section"
       aria-labelledby="why-heading"
     >
       <span className="why__grain" aria-hidden="true" />
+      <span className="why__promise-mark" aria-hidden="true">
+        Promise
+      </span>
 
       <div className="home-container">
         <Reveal className="why__header">
@@ -215,10 +218,6 @@ function WhySvHub() {
                     <div className="why__body">
                       <h3>{item.title}</h3>
                       <p className="why__copy">{item.copy}</p>
-                      <span className="why__hint" aria-hidden="true">
-                        Explore
-                        <Arrow size={12} />
-                      </span>
                     </div>
                   </article>
                 </li>

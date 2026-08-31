@@ -7,7 +7,7 @@ gsap.registerPlugin(useGSAP, ScrollTrigger)
 
 ScrollTrigger.config({ ignoreMobileResize: true })
 
-const IOS_EASE = 'expo.out'
+const EASE = 'power3.out'
 
 function HomeScroll({ children }) {
   const root = useRef(null)
@@ -30,52 +30,30 @@ function HomeScroll({ children }) {
 
           if (reduceMotion) {
             page.classList.remove('home-page--motion')
-            gsap.set(['.home-reveal', '.home-stagger > *', '.hero__content > *', '.hero__image'], {
-              clearProps: 'all',
-            })
+            gsap.set(['.home-reveal', '.home-stagger > *'], { clearProps: 'all' })
             return
           }
 
           page.classList.add('home-page--motion')
 
-          gsap.fromTo(
-            '.hero__content > *',
-            { autoAlpha: 0, y: 28 },
-            {
-              autoAlpha: 1,
-              y: 0,
-              duration: 1.15,
-              ease: IOS_EASE,
-              stagger: 0.08,
-              delay: 0.05,
-            },
-          )
-
-          gsap.fromTo(
-            '.hero__image',
-            { autoAlpha: 0, y: 40 },
-            { autoAlpha: 1, y: 0, duration: 1.35, ease: IOS_EASE, delay: 0.16 },
-          )
-
           const singles = gsap.utils.toArray('.home-reveal:not(.home-stagger)')
           if (singles.length) {
-            gsap.set(singles, { autoAlpha: 0, y: 44, scale: 0.985 })
+            gsap.set(singles, { autoAlpha: 0, y: 28 })
 
             ScrollTrigger.batch(singles, {
-              start: 'top 92%',
+              start: 'top 90%',
               once: true,
-              interval: 0.12,
+              interval: 0.1,
               batchMax: 6,
               onEnter: (batch) => {
                 batch.forEach((el, i) => {
                   gsap.to(el, {
                     autoAlpha: 1,
                     y: 0,
-                    scale: 1,
-                    duration: 1.05,
-                    ease: IOS_EASE,
+                    duration: 0.7,
+                    ease: EASE,
                     overwrite: true,
-                    delay: i * 0.08 + Number(el.getAttribute('data-delay') || 0) / 1000,
+                    delay: i * 0.06 + Number(el.getAttribute('data-delay') || 0) / 1000,
                   })
                 })
               },
@@ -86,18 +64,18 @@ function HomeScroll({ children }) {
             const items = group.children
             if (!items.length) return
 
-            gsap.set(items, { autoAlpha: 0, y: 36 })
+            gsap.set(items, { autoAlpha: 0, y: 24 })
 
             ScrollTrigger.create({
               trigger: group,
-              start: 'top 90%',
+              start: 'top 88%',
               once: true,
               onEnter: () => {
                 gsap.to(items, {
                   autoAlpha: 1,
                   y: 0,
-                  duration: 0.95,
-                  ease: IOS_EASE,
+                  duration: 0.65,
+                  ease: EASE,
                   stagger: 0.07,
                   overwrite: true,
                   delay: Number(group.getAttribute('data-delay') || 0) / 1000,
@@ -106,11 +84,11 @@ function HomeScroll({ children }) {
             })
           })
 
-          const travel = isPhone ? 22 : 46
+          const travel = isPhone ? 12 : 28
 
           gsap.utils.toArray('[data-speed]').forEach((el) => {
             const speed = Number(el.dataset.speed) || 0.12
-            const distance = travel * speed * 5.5
+            const distance = travel * speed * 4
 
             gsap.fromTo(
               el,
@@ -122,7 +100,7 @@ function HomeScroll({ children }) {
                   trigger: el,
                   start: 'top bottom',
                   end: 'bottom top',
-                  scrub: isPhone ? 1.15 : 0.75,
+                  scrub: isPhone ? 1.1 : 0.8,
                 },
               },
             )
