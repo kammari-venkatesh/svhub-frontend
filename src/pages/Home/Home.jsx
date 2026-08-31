@@ -7,11 +7,12 @@ import CategorySection from './CategorySection.jsx'
 import WhySvHub from './WhySvHub.jsx'
 import Testimonials from './Testimonials.jsx'
 import FinalCta from './FinalCta.jsx'
+import HomeScroll from './HomeScroll.jsx'
 import './Home.css'
 
 function Home() {
   return (
-    <>
+    <HomeScroll>
       <Hero />
       <StatsStrip />
       <Storefronts />
@@ -21,7 +22,7 @@ function Home() {
       <WhySvHub />
       <Testimonials />
       <FinalCta />
-    </>
+    </HomeScroll>
   )
 }
 

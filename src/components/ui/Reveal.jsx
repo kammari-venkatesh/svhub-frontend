@@ -7,6 +7,7 @@ function Reveal({ as: Tag = 'div', className = '', delay, children, ...props }) 
     <Tag
       ref={ref}
       className={`home-reveal${visible ? ' is-in' : ''} ${className}`.trim()}
+      data-delay={delay || undefined}
       style={delay ? { transitionDelay: `${delay}ms` } : undefined}
       {...props}
     >

@@ -34,7 +34,7 @@ function Hero() {
         </div>
       </div>
 
-      <div className="hero__image">
+      <div className="hero__image" data-speed="0.18">
         <img src={heroContent.image} alt={heroContent.imageAlt} />
       </div>
     </section>

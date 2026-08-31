@@ -110,14 +110,17 @@
 .hero__image {
   width: 100%;
   margin-top: -310px;
+  overflow: hidden;
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
 }
 
 .hero__image img {
   width: 100%;
   height: auto;
   display: block;
-  border-top-left-radius: 24px;
-  border-top-right-radius: 24px;
+  transform: translate3d(0, calc(var(--p, 0) * 1px), 0) scale(1.08);
+  will-change: transform;
 }
 
 @media (max-width: 1199px) {
@@ -166,15 +169,21 @@
 
   .hero__image {
     margin-top: -120px;
-  }
-
-  .hero__image img {
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
   }
 
   .hero__star {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__content > *,
+  .hero__image,
+  .hero__image img {
+    opacity: 1;
+    transform: none;
   }
 }
 

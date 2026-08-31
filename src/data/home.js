@@ -27,7 +27,7 @@ export const featuredIntro = {
   eyebrow: 'Handpicked For You',
   title: 'Goodness for Every Day.',
   copy: 'Explore a few of our everyday favourites, rooted in traditional ingredients and made for modern homes.',
-  cta: 'View All Products',
+  cta: 'Explore All Products',
   ctaTo: '/shop',
 }
 

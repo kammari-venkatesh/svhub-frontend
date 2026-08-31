@@ -1,3 +1,8 @@
+.home-page {
+  --p: 0;
+  width: 100%;
+}
+
 .home-container {
   width: 100%;
   max-width: 1280px;
@@ -6,7 +11,7 @@
 }
 
 .home-section {
-  --home-ease: 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  --home-ease: 900ms cubic-bezier(0.16, 1, 0.3, 1);
   padding-block: 120px;
 }
 
@@ -28,10 +33,10 @@
 
 .home-reveal {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translate3d(0, 28px, 0);
   transition:
-    opacity var(--home-ease, 500ms cubic-bezier(0.22, 1, 0.36, 1)),
-    transform var(--home-ease, 500ms cubic-bezier(0.22, 1, 0.36, 1));
+    opacity var(--home-ease, 900ms cubic-bezier(0.16, 1, 0.3, 1)),
+    transform var(--home-ease, 900ms cubic-bezier(0.16, 1, 0.3, 1));
 }
 
 .home-reveal.is-in {
@@ -48,7 +53,7 @@
 @keyframes home-rise {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translate3d(0, 28px, 0);
   }
   to {
     opacity: 1;
@@ -62,16 +67,22 @@
 
 .home-stagger.is-in > * {
   opacity: 1;
-  animation: home-rise var(--home-ease, 500ms cubic-bezier(0.22, 1, 0.36, 1)) backwards;
+  animation: home-rise var(--home-ease, 900ms cubic-bezier(0.16, 1, 0.3, 1)) backwards;
 }
 
 .home-stagger.is-in > *:nth-child(1) { animation-delay: 0ms; }
-.home-stagger.is-in > *:nth-child(2) { animation-delay: 80ms; }
-.home-stagger.is-in > *:nth-child(3) { animation-delay: 160ms; }
-.home-stagger.is-in > *:nth-child(4) { animation-delay: 240ms; }
-.home-stagger.is-in > *:nth-child(5) { animation-delay: 300ms; }
-.home-stagger.is-in > *:nth-child(6) { animation-delay: 360ms; }
+.home-stagger.is-in > *:nth-child(2) { animation-delay: 70ms; }
+.home-stagger.is-in > *:nth-child(3) { animation-delay: 140ms; }
+.home-stagger.is-in > *:nth-child(4) { animation-delay: 210ms; }
+.home-stagger.is-in > *:nth-child(5) { animation-delay: 280ms; }
+.home-stagger.is-in > *:nth-child(6) { animation-delay: 350ms; }
 .home-stagger.is-in > *:nth-child(7) { animation-delay: 420ms; }
+
+.home-page--motion .home-reveal,
+.home-page--motion .home-stagger > * {
+  animation: none;
+  transition: none;
+}
 
 @media (max-width: 1199px) {
   .home-section {
