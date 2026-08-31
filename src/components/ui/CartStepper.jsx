@@ -3,6 +3,14 @@ import './CartStepper.css'
 
 const MAX_QTY = 12
 
+function PlusIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M8 3.25v9.5M3.25 8h9.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 function CartStepper({ product, className = '' }) {
   const { addItem, setItemQuantity, quantityOf } = useCart()
   const qty = quantityOf(product)
@@ -11,8 +19,8 @@ function CartStepper({ product, className = '' }) {
 
   if (outOfStock) {
     return (
-      <span className={`${classes} cart-step--oos`}>
-        Out of stock
+      <span className={`${classes} cart-step--oos`} aria-label={`${product.name} is out of stock`}>
+        ×
       </span>
     )
   }
@@ -25,7 +33,7 @@ function CartStepper({ product, className = '' }) {
         onClick={() => addItem(product, 1)}
         aria-label={`Add ${product.name} to cart`}
       >
-        Add
+        <PlusIcon />
       </button>
     )
   }

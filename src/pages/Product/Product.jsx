@@ -2,10 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import ProductGallery from '../../components/product/ProductGallery.jsx'
 import Button from '../../components/ui/Button.jsx'
-import ProductCard from '../../components/ui/ProductCard.jsx'
 import QuantitySelector from '../../components/ui/QuantitySelector.jsx'
 import { useCart } from '../../context/CartContext.jsx'
 import { getProductDetail, readViewed, rememberViewed, relatedFor } from '../../data/productDetails.js'
+import ShopProduct from '../Shop/ShopProduct.jsx'
 import { formatPrice } from '../../utils/money.js'
 import './Product.css'
 
@@ -27,6 +27,39 @@ function Arrow({ size = 13 }) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+    </svg>
+  )
+}
+
+function IconCheck() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.25" stroke="currentColor" strokeWidth="1.6" />
+      <path d="m8.8 12.2 2.2 2.2 4.3-4.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function IconShip() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M3 7.5h11v8H3v-8Zm11 2h4.2L21 13v2.5h-7V9.5Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <circle cx="7" cy="17.5" r="1.5" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="17" cy="17.5" r="1.5" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  )
+}
+
+function IconLock() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="5" y="11" width="14" height="9" rx="1.6" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M8 11V8.4A4 4 0 0 1 12 4.5 4 4 0 0 1 16 8.4V11" stroke="currentColor" strokeWidth="1.6" />
     </svg>
   )
 }
@@ -64,12 +97,14 @@ function ProductNotFound() {
   )
 }
 
-function DetailBlock({ title, children }) {
+function DetailBlock({ title, open = false, children }) {
   return (
-    <section className="pdp-detail">
-      <h2>{title}</h2>
+    <details className="pdp-detail" open={open}>
+      <summary>
+        <h2>{title}</h2>
+      </summary>
       <div className="pdp-detail__body">{children}</div>
-    </section>
+    </details>
   )
 }
 
@@ -84,9 +119,9 @@ function ProductRail({ id, eyebrow, title, products }) {
           <h2 id={id}>{title}</h2>
         </header>
         <ul className="pdp-rail__grid">
-          {products.map((item) => (
+          {products.map((item, index) => (
             <li key={item.id}>
-              <ProductCard product={item} />
+              <ShopProduct product={item} index={index} />
             </li>
           ))}
         </ul>
@@ -122,13 +157,12 @@ function Product() {
 
 function ProductView({ product, related }) {
   const navigate = useNavigate()
-  const { addItem } = useCart()
+  const { setItemQuantity, quantityOf } = useCart()
   const [variantId, setVariantId] = useState(product.variants[0]?.id ?? '')
-  const [quantity, setQuantity] = useState(1)
-  const [justAdded, setJustAdded] = useState(false)
   const [recent] = useState(() => readViewed(product.id, 4))
   const actionsRef = useRef(null)
   const [showSticky, setShowSticky] = useState(false)
+  const [narrow, setNarrow] = useState(false)
 
   const variant =
     product.variants.find((item) => item.id === variantId) ?? product.variants[0] ?? null
@@ -145,12 +179,19 @@ function ProductView({ product, related }) {
   const categoryName = product.categoryMeta?.name
   const categoryTo = product.categoryMeta?.to ?? '/shop'
   const houseTo = product.storefrontMeta?.to ?? '/shop'
+  const trust = [
+    { icon: <IconShip />, text: product.shipping.notes[0] },
+    { icon: <IconLock />, text: product.shipping.notes[2] },
+    { icon: <IconCheck />, text: 'Packed in Coimbatore' },
+  ].filter((item) => item.text)
 
   useEffect(() => {
-    if (!justAdded) return undefined
-    const timer = window.setTimeout(() => setJustAdded(false), 1800)
-    return () => window.clearTimeout(timer)
-  }, [justAdded])
+    const media = window.matchMedia('(max-width: 959px)')
+    const update = () => setNarrow(media.matches)
+    update()
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
 
   useEffect(() => {
     const node = actionsRef.current
@@ -176,21 +217,30 @@ function ProductView({ product, related }) {
     weight: variant?.label ?? product.weight,
     stock,
   }
+  const quantity = quantityOf(cartProduct)
+  const inCart = quantity > 0
+
+  function handleQuantity(next) {
+    if (outOfStock) return
+    setItemQuantity(cartProduct, next)
+  }
 
   function handleAdd() {
     if (outOfStock) return
-    addItem(cartProduct, quantity)
-    setJustAdded(true)
+    if (inCart) {
+      navigate('/cart')
+      return
+    }
+    setItemQuantity(cartProduct, 1)
   }
 
   function handleBuy() {
     if (outOfStock) return
-    addItem(cartProduct, quantity)
+    if (!inCart) setItemQuantity(cartProduct, 1)
     navigate('/cart')
   }
 
-  const addLabel = outOfStock ? 'Out of stock' : justAdded ? 'Added' : 'Add to cart'
-  const ctaVariant = accentToken === 'terracotta' ? 'terracotta' : 'espresso'
+  const addLabel = outOfStock ? 'Out of stock' : inCart ? 'Go to cart' : 'Add to cart'
 
   return (
     <div className={`pdp pdp--${accentToken}`} style={{ '--pdp-accent': accent }}>
@@ -218,23 +268,17 @@ function ProductView({ product, related }) {
             />
 
             <div className="pdp__info">
-              <p className="pdp__type">{product.type}</p>
-              <h1 id="pdp-heading">{product.name}</h1>
-              <p className="pdp__house">
+              <p className="pdp__eyebrow">
                 <Link to={houseTo}>{houseName}</Link>
-                {categoryName ? (
-                  <>
-                    <span aria-hidden="true"> · </span>
-                    <Link to={categoryTo}>{categoryName}</Link>
-                  </>
-                ) : null}
+              </p>
+              <h1 id="pdp-heading">{product.name}</h1>
+              <p className="pdp__kicker">
+                <Link to={categoryTo}>{product.type}</Link>
               </p>
 
               <p className="pdp__price-row">
                 <span className="pdp__price">{formatPrice(price)}</span>
-                {hasCompare ? (
-                  <s className="pdp__original">{formatPrice(originalPrice)}</s>
-                ) : null}
+                {hasCompare ? <s className="pdp__original">{formatPrice(originalPrice)}</s> : null}
                 {discount ? <span className="pdp__save">{discount}% off</span> : null}
               </p>
 
@@ -244,17 +288,11 @@ function ProductView({ product, related }) {
                 {stock === 'low-stock' ? ' — a few packs left' : null}
               </p>
 
-              {sku ? (
-                <p className="pdp__sku">
-                  SKU <span>{sku}</span>
-                </p>
-              ) : null}
-
               <p className="pdp__lede">{product.description}</p>
 
               {product.variants.length ? (
                 <fieldset className="pdp__variants">
-                  <legend>Weight / variant</legend>
+                  <legend>Select weight</legend>
                   <div className="pdp__variant-list">
                     {product.variants.map((item) => {
                       const selected = item.id === variant?.id
@@ -283,40 +321,47 @@ function ProductView({ product, related }) {
                 </fieldset>
               ) : null}
 
-              <QuantitySelector
-                value={quantity}
-                onChange={setQuantity}
-                disabled={outOfStock}
-              />
-
-              <div className="pdp__actions" ref={actionsRef}>
-                <Button
-                  variant={ctaVariant}
+              <div className="pdp__buy" ref={actionsRef}>
+                <QuantitySelector
+                  value={quantity}
+                  onChange={handleQuantity}
+                  min={0}
                   disabled={outOfStock}
-                  onClick={handleAdd}
-                  aria-live="polite"
-                  aria-label={
-                    outOfStock
-                      ? `${product.name} is out of stock`
-                      : `Add ${quantity} ${product.name} to cart`
-                  }
-                >
-                  {addLabel}
-                </Button>
-                <Button
-                  variant="secondary"
-                  disabled={outOfStock}
-                  onClick={handleBuy}
-                  aria-label={outOfStock ? `${product.name} is out of stock` : `Buy ${product.name} now`}
-                >
-                  Buy now
-                </Button>
+                />
+                <div className="pdp__actions">
+                  <Button
+                    variant="primary"
+                    disabled={outOfStock}
+                    onClick={handleAdd}
+                    aria-live="polite"
+                    aria-label={
+                      outOfStock
+                        ? `${product.name} is out of stock`
+                        : inCart
+                          ? 'Go to cart'
+                          : `Add ${quantity} ${product.name} to cart`
+                    }
+                  >
+                    {addLabel}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    disabled={outOfStock}
+                    onClick={handleBuy}
+                    aria-label={outOfStock ? `${product.name} is out of stock` : `Buy ${product.name} now`}
+                  >
+                    Buy now
+                  </Button>
+                </div>
               </div>
 
               <ul className="pdp__trust">
-                <li>Packed in Coimbatore</li>
-                <li>Traditional methods</li>
-                <li>Small-batch packing</li>
+                {trust.map((item) => (
+                  <li key={item.text}>
+                    {item.icon}
+                    <span>{item.text}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -325,11 +370,11 @@ function ProductView({ product, related }) {
 
       <section className="pdp__details" aria-label="Product details">
         <div className="pdp__container pdp__details-grid">
-          <DetailBlock title="Description">
+          <DetailBlock title="Description" open>
             <p>{product.description}</p>
           </DetailBlock>
 
-          <DetailBlock title="Ingredients">
+          <DetailBlock title="Ingredients" open={!narrow}>
             <ul className="pdp__ingredients">
               {product.ingredients.map((item) => (
                 <li key={item}>{item}</li>
@@ -337,8 +382,26 @@ function ProductView({ product, related }) {
             </ul>
           </DetailBlock>
 
-          <DetailBlock title="Product information">
+          <DetailBlock title="Product information" open={!narrow}>
             <dl className="pdp__facts">
+              <div>
+                <dt>Category</dt>
+                <dd>
+                  <Link to={categoryTo}>{categoryName}</Link>
+                </dd>
+              </div>
+              <div>
+                <dt>Storefront</dt>
+                <dd>
+                  <Link to={houseTo}>{houseName}</Link>
+                </dd>
+              </div>
+              {sku ? (
+                <div>
+                  <dt>SKU</dt>
+                  <dd>{sku}</dd>
+                </div>
+              ) : null}
               {product.information.map((row) => (
                 <div key={row.label}>
                   <dt>{row.label}</dt>
@@ -352,7 +415,7 @@ function ProductView({ product, related }) {
             </dl>
           </DetailBlock>
 
-          <DetailBlock title="Weight / variants">
+          <DetailBlock title="Weight / variants" open={!narrow}>
             <ul className="pdp__packs">
               {product.variants.map((item) => (
                 <li key={item.id}>
@@ -364,15 +427,15 @@ function ProductView({ product, related }) {
             </ul>
           </DetailBlock>
 
-          <DetailBlock title="Shipping information">
+          <DetailBlock title="Shipping information" open={!narrow}>
             <p>{product.shipping.summary}</p>
             <ul className="pdp__ship-notes">
               {product.shipping.notes.map((note) => (
                 <li key={note}>{note}</li>
               ))}
             </ul>
-            <Link className="pdp__policy" to="/shipping">
-              Read the shipping policy
+            <Link className="pdp__policy" to="/shipping-policy">
+              Check our shipping policy
               <Arrow />
             </Link>
           </DetailBlock>
@@ -392,10 +455,7 @@ function ProductView({ product, related }) {
         products={recent}
       />
 
-      <div
-        className={`pdp-sticky${showSticky ? ' is-visible' : ''}`}
-        aria-hidden={!showSticky}
-      >
+      <div className={`pdp-sticky${showSticky ? ' is-visible' : ''}`} aria-hidden={!showSticky}>
         <div className="pdp-sticky__inner">
           <div className="pdp-sticky__price">
             <p>{formatPrice(price)}</p>
@@ -409,7 +469,9 @@ function ProductView({ product, related }) {
             aria-label={
               outOfStock
                 ? `${product.name} is out of stock`
-                : `Add ${quantity} ${product.name} to cart`
+                : inCart
+                  ? 'Go to cart'
+                  : `Add ${quantity} ${product.name} to cart`
             }
             onClick={handleAdd}
           >

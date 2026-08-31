@@ -5,8 +5,8 @@ import { getStorefront } from './storefronts.js'
 export const selfCare = getStorefront('self-care')
 
 export const selfCareIntro = {
-  eyebrow: 'House of Care',
-  kicker: 'Self-Care',
+  eyebrow: 'Self-Care',
+  kicker: 'House of Care',
   title: 'Simple Care, Rooted in Nature.',
   copy: 'Handmade herbal soaps inspired by traditional ingredients and everyday care.',
   cta: 'Shop Self-Care',
@@ -15,18 +15,9 @@ export const selfCareIntro = {
   imageAlt: 'Handmade herbal soap bars stacked with dried botanicals',
 }
 
-export const selfCareStills = [
-  { src: images.herbs, alt: 'Fresh garden herbs gathered for traditional soap making', label: 'Herbs' },
-  { src: images.careLeaves, alt: 'Green leaves used as natural soap ingredients', label: 'Leaves' },
-  { src: images.careIngredients, alt: 'Turmeric and kitchen spices used in handmade care', label: 'Natural ingredients' },
-  { src: images.handmadeSoaps, alt: 'Cut bars of handmade herbal soap', label: 'Handmade soap' },
-  { src: images.carePrep, alt: 'Wooden spoons of turmeric and herbal powders used in traditional care', label: 'Traditional preparation' },
-  { src: images.careTexture, alt: 'Earthy handmade soap bars cut by hand', label: 'Home-crafted textures' },
-]
-
 export const selfCareCollectionIntro = {
   eyebrow: 'The Collection',
-  title: 'Handmade soaps for everyday care.',
+  title: 'Our Artisan Soaps',
   copy: 'Six bars, each named for the ingredient that shapes it — mixed and cut by hand.',
 }
 
@@ -39,36 +30,32 @@ export const selfCareProductIds = [
   'multanimitti-soap',
 ]
 
+export const selfCareNotes = {
+  'vettiver-soap': 'Named for vettiver',
+  'kuppaimeni-soap': 'Named for kuppaimeni',
+  'kasthuri-manjal-soap': 'Named for kasthuri manjal',
+  'sweet-basil-soap': 'Named for sweet basil',
+  'hibiscus-soap': 'Named for hibiscus',
+  'multanimitti-soap': 'Named for multanimitti',
+}
+
 export const selfCareProducts = selfCareProductIds
   .map((id) => products.find((product) => product.id === id))
   .filter(Boolean)
 
 export const selfCareStory = {
-  eyebrow: 'Our Approach',
-  title: 'Made by hand, in the old way.',
-  copy: 'These soaps begin with herbs, oils and clays that have long belonged in South Indian homes. Each bar is mixed, poured and cut by hand — a small-batch craft meant for everyday washing, not for extravagant promises.',
-  principles: [
-    {
-      number: '01',
-      title: 'Handmade batches',
-      copy: 'Every bar is prepared slowly, in small quantities, without industrial shortcuts.',
-    },
-    {
-      number: '02',
-      title: 'Traditional ingredients',
-      copy: 'Vettiver, kuppaimeni, kasthuri manjal, sweet basil, hibiscus and multanimitti — named as they are known.',
-    },
-    {
-      number: '03',
-      title: 'Everyday care',
-      copy: 'Simple soaps for daily washing, kept honest rather than dressed in clinical claims.',
-    },
-  ],
-  figures: [
-    { src: images.carePrep, alt: 'Wooden spoons of turmeric and herbal powders used in traditional care' },
-    { src: images.herbs, alt: 'Fresh herbs set aside for soap making' },
-    { src: images.handmadeSoaps, alt: 'Handmade soap bars stacked in a home setting' },
-  ],
+  eyebrow: 'The Process',
+  title: 'Crafted by hand, as intended.',
+  lede: 'These soaps begin with herbs, oils and clays that have long belonged in South Indian homes.',
+  copy: 'Each bar is mixed, poured and cut by hand — a small-batch craft meant for everyday washing, not for extravagant promises.',
+  cta: 'Learn about our ingredients',
+  ctaHref: '#handmade-soaps',
+  figure: {
+    src: images.carePrep,
+    alt: 'Wooden spoons of turmeric and herbal powders used in traditional care',
+  },
+  cardTitle: 'Made by hand',
+  cardCopy: 'Every bar is prepared slowly, in small quantities, without industrial shortcuts.',
 }
 
 export const selfCareClose = {
@@ -77,5 +64,4 @@ export const selfCareClose = {
   copy: 'Choose a bar named for its ingredient, and bring a little handmade care into the rhythm of your day.',
   cta: 'Shop Self-Care',
   ctaHref: '#handmade-soaps',
-  image: images.handmadeSoaps,
 }

@@ -137,6 +137,10 @@
   background: rgba(var(--charcoal-rgb), 0.08);
 }
 
+.navbar__icon.is-active {
+  color: var(--espresso-brown);
+}
+
 .navbar--overlay .navbar__icon:hover {
   background: rgba(255, 255, 255, 0.12);
 }

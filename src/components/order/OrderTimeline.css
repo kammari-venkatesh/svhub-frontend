@@ -1,0 +1,447 @@
+.ot {
+  --ot-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ot-fill: 820ms;
+  --ot-slot: 22px;
+  --ot-dot: 16px;
+  --ot-now: 20px;
+  --ot-step-h: 56px;
+  --ot-progress: 0;
+  --ot-steps: 5;
+  position: relative;
+  min-width: 0;
+  padding: 4px 12px 0;
+  margin-inline: -12px;
+}
+
+.ot__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px 28px;
+}
+
+.ot__kicker,
+.ot__now-kicker {
+  margin: 0;
+  color: var(--terracotta);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ot__now {
+  display: grid;
+  gap: 5px;
+  justify-items: end;
+  margin: 0;
+}
+
+.ot__now-kicker {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+
+.ot__now-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--espresso-brown);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ot__now-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sv-green);
+}
+
+.ot.is-cancelled .ot__now-value {
+  color: var(--terracotta);
+}
+
+.ot.is-cancelled .ot__now-dot {
+  background: var(--terracotta);
+}
+
+.ot.is-revealed .ot__now-value {
+  animation: ot-now-in 720ms var(--ot-ease) both;
+}
+
+.ot__note {
+  max-width: 42ch;
+  margin: 12px 0 0;
+  color: var(--charcoal-green);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.7;
+}
+
+.ot__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ot-rail {
+  position: relative;
+  isolation: isolate;
+  margin: 28px 0 0;
+}
+
+.ot-rail__steps {
+  display: grid;
+  grid-template-columns: repeat(var(--ot-steps), minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ot-rail__bg,
+.ot-rail__fill {
+  position: absolute;
+  top: calc(var(--ot-slot) / 2 - 1px);
+  left: calc(100% / (var(--ot-steps) * 2));
+  right: calc(100% / (var(--ot-steps) * 2));
+  z-index: 0;
+  height: 2px;
+  border-radius: 99px;
+  pointer-events: none;
+}
+
+.ot-rail__bg {
+  background: rgba(var(--charcoal-rgb), 0.14);
+}
+
+.ot-rail__fill {
+  background: var(--sv-green);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.ot.is-revealed .ot-rail__fill {
+  transform: scaleX(var(--ot-progress));
+  transition: transform var(--ot-fill) var(--ot-ease);
+}
+
+.ot.is-cancelled .ot-rail__fill {
+  transform: scaleX(0);
+  transition: none;
+}
+
+.ot-rail__step {
+  --ot-i: 0;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.ot-rail__mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--ot-slot);
+  height: var(--ot-slot);
+}
+
+.ot-rail__dot {
+  display: grid;
+  place-items: center;
+  width: var(--ot-dot);
+  height: var(--ot-dot);
+  border: 1.5px solid rgba(var(--charcoal-rgb), 0.22);
+  border-radius: 50%;
+  background: var(--cream);
+  color: var(--white);
+}
+
+.ot.is-revealed .ot-rail__step.is-done .ot-rail__dot {
+  border-color: var(--sv-green);
+  background: var(--sv-green);
+  animation: ot-mark 480ms var(--ot-ease) both;
+  animation-delay: calc(var(--ot-i) * 200ms);
+}
+
+.ot.is-revealed .ot-rail__step.is-current .ot-rail__dot {
+  width: var(--ot-now);
+  height: var(--ot-now);
+  border-color: var(--espresso-brown);
+  background: var(--espresso-brown);
+  animation: ot-current 720ms var(--ot-ease) both;
+  animation-delay: calc(var(--ot-i) * 200ms);
+}
+
+.ot-rail__ring,
+.ot-rail__halo {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ot-rail__ring {
+  inset: -3px;
+  border: 1.5px solid var(--sv-green);
+  opacity: 0;
+}
+
+.ot-rail__halo {
+  inset: -7px;
+  border: 1px solid rgba(var(--sv-green-rgb), 0.28);
+  opacity: 0;
+}
+
+.ot.is-revealed .ot-rail__step.is-current .ot-rail__ring {
+  animation: ot-ring 800ms var(--ot-ease) both;
+  animation-delay: calc(var(--ot-i) * 200ms);
+}
+
+.ot.is-live.is-revealed .ot-rail__step.is-current .ot-rail__halo {
+  animation: ot-pulse 2000ms ease-out infinite;
+  animation-delay: calc(var(--ot-i) * 200ms + 820ms);
+}
+
+.ot-rail__check {
+  display: block;
+  opacity: 0;
+  transform: scale(0.7);
+}
+
+.ot.is-revealed .ot-rail__step.is-done .ot-rail__check {
+  animation: ot-check 240ms var(--ot-ease) both;
+  animation-delay: calc(var(--ot-i) * 200ms + 180ms);
+}
+
+.ot-rail__copy {
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  min-width: 0;
+}
+
+.ot-rail__label {
+  color: var(--charcoal-green);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.ot-rail__stamp {
+  color: rgba(var(--charcoal-rgb), 0.52);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.ot.is-revealed .ot-rail__step.is-done .ot-rail__label,
+.ot.is-revealed .ot-rail__step.is-current .ot-rail__label {
+  color: var(--espresso-brown);
+  opacity: 1;
+  animation: ot-label 300ms var(--ot-ease) both;
+  animation-delay: calc(var(--ot-i) * 200ms + 200ms);
+}
+
+.ot.is-revealed .ot-rail__step.is-current .ot-rail__label {
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+@keyframes ot-mark {
+  from {
+    transform: scale(0.85);
+    opacity: 0.45;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes ot-current {
+  from {
+    transform: scale(0.85);
+    opacity: 0.4;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes ot-ring {
+  from {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ot-check {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ot-label {
+  from {
+    opacity: 0.55;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ot-now-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ot-pulse {
+  0% {
+    opacity: 0.25;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+}
+
+@media (max-width: 900px) and (min-width: 720px) {
+  .ot-rail__label {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+  }
+}
+
+@media (max-width: 719px) {
+  .ot__now {
+    justify-items: start;
+  }
+
+  .ot-rail__steps {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ot-rail__bg,
+  .ot-rail__fill {
+    top: calc(var(--ot-step-h) / 2 - 1px);
+    right: auto;
+    bottom: calc(var(--ot-step-h) / 2 - 1px);
+    left: calc(var(--ot-slot) / 2 - 1px);
+    width: 2px;
+    height: auto;
+    transform: none;
+  }
+
+  .ot-rail__fill {
+    transform: scaleY(0);
+    transform-origin: top center;
+  }
+
+  .ot.is-revealed .ot-rail__fill {
+    transform: scaleY(var(--ot-progress));
+  }
+
+  .ot.is-cancelled .ot-rail__fill {
+    transform: scaleY(0);
+  }
+
+  .ot-rail__step {
+    grid-template-columns: var(--ot-slot) minmax(0, 1fr);
+    align-items: center;
+    justify-items: start;
+    gap: 14px;
+    min-height: var(--ot-step-h);
+    text-align: left;
+  }
+
+  .ot-rail__copy {
+    justify-items: start;
+  }
+
+  .ot.is-revealed .ot-rail__step.is-current .ot-rail__label {
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ot.is-revealed .ot__now-value,
+  .ot.is-revealed .ot-rail__fill,
+  .ot.is-revealed .ot-rail__step.is-done .ot-rail__dot,
+  .ot.is-revealed .ot-rail__step.is-current .ot-rail__dot,
+  .ot.is-revealed .ot-rail__step.is-current .ot-rail__ring,
+  .ot.is-live.is-revealed .ot-rail__step.is-current .ot-rail__halo,
+  .ot.is-revealed .ot-rail__step.is-done .ot-rail__check,
+  .ot.is-revealed .ot-rail__step.is-done .ot-rail__label,
+  .ot.is-revealed .ot-rail__step.is-current .ot-rail__label {
+    animation: none;
+    transition: none;
+    transform: none;
+    opacity: 1;
+  }
+
+  .ot-rail__fill,
+  .ot.is-revealed .ot-rail__fill {
+    transform: scaleX(var(--ot-progress));
+  }
+
+  .ot.is-cancelled .ot-rail__fill {
+    transform: scaleX(0);
+  }
+
+  .ot-rail__halo {
+    display: none;
+  }
+
+  .ot.is-revealed .ot-rail__step.is-done .ot-rail__check {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 719px) and (prefers-reduced-motion: reduce) {
+  .ot-rail__fill,
+  .ot.is-revealed .ot-rail__fill {
+    transform: scaleY(var(--ot-progress));
+  }
+
+  .ot.is-cancelled .ot-rail__fill {
+    transform: scaleY(0);
+  }
+}

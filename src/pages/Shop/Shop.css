@@ -78,38 +78,10 @@
 }
 
 .shop--market .shop__title {
-  max-width: 9.4em;
-  font-size: clamp(40px, 6vw, 76px);
-  letter-spacing: -0.034em;
-  line-height: 1.04;
-}
-
-.shop__note {
-  position: relative;
-  display: inline-flex;
-  margin: 18px 0 0 4px;
-  color: var(--shop-mark);
-  transform: rotate(-2.2deg);
-  transform-origin: left center;
-}
-
-.shop__note span {
-  font-family: var(--font-display);
-  font-size: 17px;
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  line-height: 1;
-}
-
-.shop__note svg {
-  position: absolute;
-  left: -4%;
-  bottom: -0.42em;
-  width: 108%;
-  height: 0.55em;
-  overflow: visible;
-  pointer-events: none;
+  max-width: 10em;
+  font-size: clamp(36px, 5vw, 64px);
+  letter-spacing: -0.032em;
+  line-height: 1.06;
 }
 
 .shop__copy {
@@ -131,14 +103,14 @@
 }
 
 .shop__houses {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 36px;
-  padding: 8px;
-  border: 1px solid rgba(var(--charcoal-rgb), 0.1);
-  border-radius: 16px;
-  background: var(--shop-surface);
+  gap: 4px;
+  margin-top: 32px;
+  padding: 4px;
+  border: 1px solid rgba(var(--charcoal-rgb), 0.12);
+  border-radius: 999px;
+  background: var(--off-white);
 }
 
 .shop__mobile-search {
@@ -147,46 +119,32 @@
 
 .shop__house {
   display: inline-flex;
-  align-items: baseline;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
   min-height: 40px;
-  padding: 0 14px;
-  border: 1px solid rgba(var(--charcoal-rgb), 0.12);
+  padding: 0 18px;
+  border: 0;
   border-radius: 999px;
-  background: var(--shop-surface);
+  background: transparent;
   color: var(--charcoal-green);
   font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
   transition:
     color var(--shop-ease),
-    background-color var(--shop-ease),
-    border-color var(--shop-ease);
-}
-
-.shop__house-index {
-  color: rgba(var(--charcoal-rgb), 0.42);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
+    background-color var(--shop-ease);
 }
 
 .shop__house.is-active {
   color: var(--off-white);
   background: var(--shop-fill);
-  border-color: var(--shop-fill);
-}
-
-.shop__house.is-active .shop__house-index {
-  color: rgba(255, 255, 255, 0.7);
 }
 
 .shop__house:hover {
   color: var(--shop-fill);
-  border-color: rgba(var(--charcoal-rgb), 0.28);
 }
 
 .shop__house.is-active:hover {
@@ -222,10 +180,10 @@
 
 .shop--market .shop__sidebar {
   top: calc(var(--nav-height) + 28px);
-  padding: 22px 20px 24px;
-  border: 1px solid rgba(var(--charcoal-rgb), 0.1);
-  border-radius: var(--radius-card);
-  background: var(--shop-surface);
+  padding: 4px 0 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .shop__sidebar-head {
@@ -482,7 +440,14 @@
 .shop__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px 18px;
+  gap: 40px 24px;
+}
+
+@media (min-width: 1440px) {
+  .shop__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 40px 22px;
+  }
 }
 
 .shop__grid > li,
@@ -490,46 +455,10 @@
   min-width: 0;
 }
 
-.shop__grid--editorial {
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  grid-auto-flow: dense;
-  align-items: start;
-  gap: 44px 28px;
-  animation: shop-in 480ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.shop__cell--lead {
-  display: flex;
-  align-self: stretch;
-  grid-column: span 7;
-  grid-row: span 2;
-}
-
-.shop__cell--stack {
-  grid-column: span 5;
-}
-
-.shop__cell--tile {
-  grid-column: span 4;
-}
-
-.shop__cell--feature {
-  grid-column: span 6;
-}
-
-.shop__cell--wide {
-  grid-column: span 12;
-}
-
-.shop__cell--lead .shop-item,
-.shop__cell--lead .shop-skel {
-  flex: 1;
-}
-
 @keyframes shop-in {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -557,23 +486,9 @@
 }
 
 .shop-skel__media {
-  aspect-ratio: 1 / 1;
-  border-radius: 10px;
-  background-color: var(--off-white);
-}
-
-.shop-skel--lead .shop-skel__media {
-  flex: 1;
-  min-height: 280px;
-  aspect-ratio: auto;
-}
-
-.shop-skel--feature .shop-skel__media {
   aspect-ratio: 4 / 5;
-}
-
-.shop-skel--wide .shop-skel__media {
-  aspect-ratio: 2.15 / 1;
+  border-radius: 12px;
+  background-color: #ece8e1;
 }
 
 .shop-skel__line {
@@ -854,25 +769,8 @@
     gap: 36px 36px;
   }
 
-  .shop__grid--editorial {
-    gap: 36px 22px;
-  }
-
-  .shop__grid--editorial .shop__cell--lead {
-    grid-column: span 6;
-  }
-
-  .shop__grid--editorial .shop__cell--stack,
-  .shop__grid--editorial .shop__cell--feature {
-    grid-column: span 6;
-  }
-
-  .shop__grid--editorial .shop__cell--tile {
-    grid-column: span 4;
-  }
-
-  .shop__grid--editorial .shop__cell--wide {
-    grid-column: span 12;
+  .shop__grid {
+    gap: 32px 20px;
   }
 }
 
@@ -1013,27 +911,7 @@
 
   .shop__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px 14px;
-  }
-
-  .shop__grid--editorial {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 32px 16px;
-  }
-
-  .shop__grid--editorial .shop__cell--lead {
-    grid-column: span 12;
-    grid-row: auto;
-  }
-
-  .shop__grid--editorial .shop__cell--wide {
-    grid-column: span 12;
-  }
-
-  .shop__grid--editorial .shop__cell--stack,
-  .shop__grid--editorial .shop__cell--feature,
-  .shop__grid--editorial .shop__cell--tile {
-    grid-column: span 6;
+    gap: 28px 16px;
   }
 
   .shop-sheet {
@@ -1059,12 +937,15 @@
   }
 
   .shop__houses {
-    gap: 8px;
-    margin-top: 28px;
+    gap: 4px;
+    margin-top: 24px;
+    width: 100%;
   }
 
   .shop__house {
+    flex: 1 1 auto;
     font-size: 11px;
+    padding: 0 12px;
   }
 
   .shop__pager {
@@ -1075,29 +956,12 @@
     flex: 1 0 auto;
   }
 
-  .shop__grid--editorial {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 28px 12px;
-  }
-
-  .shop__grid--editorial .shop__cell--lead,
-  .shop__grid--editorial .shop__cell--wide {
-    grid-column: 1 / -1;
-    grid-row: auto;
-  }
-
-  .shop__grid--editorial .shop__cell--stack,
-  .shop__grid--editorial .shop__cell--feature,
-  .shop__grid--editorial .shop__cell--tile {
-    grid-column: auto;
+  .shop__grid {
+    gap: 24px 12px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .shop__grid--editorial {
-    animation: none;
-  }
-
   .shop-skel__media,
   .shop-skel__line {
     animation: none;

@@ -7,6 +7,16 @@
   margin-top: var(--space-32);
 }
 
+.placeholder__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.placeholder__actions .btn {
+  margin-top: var(--space-32);
+}
+
 @media (max-width: 600px) {
   .placeholder .btn {
     width: 100%;

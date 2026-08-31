@@ -8,7 +8,7 @@ export const shopIntro = {
   copy: 'Explore traditional foods, native staples, authentic masalas and handmade self-care products.',
 }
 
-export const PAGE_SIZE = 9
+export const PAGE_SIZE = 12
 
 export const priceFilters = [
   { id: 'all', label: 'Any price' },
@@ -114,6 +114,7 @@ export function parseListingParams(searchParams) {
     price: searchParams.get('price') ?? 'all',
     availability: searchParams.get('stock') ?? 'all',
     sort: searchParams.get('sort') ?? 'featured',
+    page: parsePage(searchParams.get('page')),
   }
 }
 
@@ -124,6 +125,7 @@ export function listingParamsToSearch(filters) {
   if (filters.price !== 'all') next.set('price', filters.price)
   if (filters.availability !== 'all') next.set('stock', filters.availability)
   if (filters.sort !== 'featured') next.set('sort', filters.sort)
+  if (filters.page > 1) next.set('page', String(filters.page))
 
   return next
 }

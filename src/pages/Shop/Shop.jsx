@@ -18,43 +18,6 @@ import './Shop.css'
 
 const HOUSES = [{ id: 'all', label: 'All' }, ...storefronts.map((house) => ({ id: house.slug, label: house.name }))]
 
-function layoutsFor(count) {
-  const layouts = []
-
-  while (layouts.length < count) {
-    const left = count - layouts.length
-
-    if (left >= 7) {
-      layouts.push('lead', 'stack', 'stack', 'tile', 'tile', 'tile', 'wide')
-      continue
-    }
-    if (left === 6) {
-      layouts.push('lead', 'stack', 'stack', 'tile', 'tile', 'tile')
-      continue
-    }
-    if (left === 5) {
-      layouts.push('feature', 'feature', 'tile', 'tile', 'tile')
-      continue
-    }
-    if (left === 4) {
-      layouts.push('feature', 'feature', 'feature', 'feature')
-      continue
-    }
-    if (left === 3) {
-      layouts.push('lead', 'stack', 'stack')
-      continue
-    }
-    if (left === 2) {
-      layouts.push('feature', 'feature')
-      continue
-    }
-
-    layouts.push('tile')
-  }
-
-  return layouts
-}
-
 function Arrow({ size = 14 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -123,9 +86,9 @@ function splitTitle(title) {
   )
 }
 
-function ProductSkeleton({ layout = 'tile' }) {
+function ProductSkeleton() {
   return (
-    <div className={`shop-skel shop-skel--${layout}`} aria-hidden="true">
+    <div className="shop-skel" aria-hidden="true">
       <span className="shop-skel__media" />
       <span className="shop-skel__line shop-skel__line--type" />
       <span className="shop-skel__line shop-skel__line--name" />
@@ -154,8 +117,6 @@ function Shop() {
   const sortLabel = sortOptions.find((option) => option.id === filters.sort)?.label ?? 'Featured'
   const countLabel = `${results.length} ${results.length === 1 ? 'product' : 'products'}`
   const catalogMeta = `${products.length} products · ${storefronts.length} houses`
-  const shownLayouts = useMemo(() => layoutsFor(shown.length), [shown.length])
-  const bootLayouts = useMemo(() => layoutsFor(6), [])
   const pages = pagerPages(page, totalPages)
 
   const applyFilters = useCallback(
@@ -247,17 +208,6 @@ function Shop() {
             <h1 id="shop-heading" className="shop__title">
               {splitTitle(shopIntro.title)}
             </h1>
-            <p className="shop__note">
-              <span>Curated for everyday</span>
-              <svg viewBox="0 0 168 14" fill="none" aria-hidden="true">
-                <path
-                  d="M2.4 9.6c18.8-4.8 36.2 2.8 55.1.4 16.6-2.1 31.8-6.6 48.4-4.2 14.2 2 27.6 5.8 42.6 2.4 7.4-1.7 14.2-4.2 17.8-1.6"
-                  stroke="currentColor"
-                  strokeWidth="1.4"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </p>
           </div>
 
           <div className="shop__intro-aside">
@@ -268,7 +218,7 @@ function Shop() {
 
         <div className="shop__container">
           <nav className="shop__houses" aria-label="Shop by house">
-            {HOUSES.map((house, index) => (
+            {HOUSES.map((house) => (
               <button
                 key={house.id}
                 type="button"
@@ -276,7 +226,6 @@ function Shop() {
                 aria-pressed={filters.storefront === house.id}
                 onClick={() => setHouse(house.id)}
               >
-                <span className="shop__house-index">{String(index + 1).padStart(2, '0')}</span>
                 {house.label}
               </button>
             ))}
@@ -339,6 +288,7 @@ function Shop() {
             searchValue={queryDraft}
             onSearch={setQueryDraft}
             onChange={handleFilterChange}
+            showStorefront={false}
           />
         </aside>
 
@@ -367,10 +317,10 @@ function Shop() {
           </div>
 
           {booting ? (
-            <ul className="shop__grid shop__grid--editorial" aria-busy="true" aria-label="Loading products">
-              {bootLayouts.map((layout, index) => (
-                <li key={index} className={`shop__cell shop__cell--${layout}`}>
-                  <ProductSkeleton layout={layout} />
+            <ul className="shop__grid" aria-busy="true" aria-label="Loading products">
+              {Array.from({ length: 9 }, (_, index) => (
+                <li key={index}>
+                  <ProductSkeleton />
                 </li>
               ))}
             </ul>
@@ -386,15 +336,12 @@ function Shop() {
             </div>
           ) : (
             <>
-              <ul className="shop__grid shop__grid--editorial" key={searchParams.toString()} aria-label="Products">
-                {shown.map((product, index) => {
-                  const layout = shownLayouts[index] ?? 'tile'
-                  return (
-                    <li key={product.id} className={`shop__cell shop__cell--${layout}`}>
-                      <ShopProduct product={product} layout={layout} index={index} />
-                    </li>
-                  )
-                })}
+              <ul className="shop__grid" key={searchParams.toString()} aria-label="Products">
+                {shown.map((product, index) => (
+                  <li key={product.id}>
+                    <ShopProduct product={product} index={index} />
+                  </li>
+                ))}
               </ul>
 
               <div className="shop__footer">
@@ -464,6 +411,7 @@ function Shop() {
           onSearch={setQueryDraft}
           onChange={handleFilterChange}
           idPrefix="shop-sheet"
+          showStorefront={false}
         />
       </ShopSheet>
 

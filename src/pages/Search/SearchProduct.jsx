@@ -31,11 +31,12 @@ function SearchProduct({ product, index }) {
   const hasCompare = Boolean(product.originalPrice && product.originalPrice > product.price)
   const productTo = productHref(product)
   const accent = house?.accentToken === 'terracotta' ? 'terracotta' : 'espresso'
+  const accentColor = house?.accentToken === 'terracotta' ? 'var(--terracotta)' : 'var(--charcoal-green)'
 
   return (
     <article
       className={`find-card find-card--${accent}${outOfStock ? ' is-unavailable' : ''}`}
-      style={{ '--card-accent': house?.accent ?? 'var(--espresso-brown)' }}
+      style={{ '--card-accent': accentColor, '--item-accent': accentColor }}
     >
       <p className="find-card__index" aria-hidden="true">
         {String(index + 1).padStart(2, '0')}
@@ -48,7 +49,7 @@ function SearchProduct({ product, index }) {
             View product <Arrow />
           </span>
         </Link>
-        <div className="find-card__step" onClick={(event) => event.stopPropagation()}>
+        <div className="find-card__step">
           <CartStepper product={product} />
         </div>
       </div>
@@ -58,17 +59,19 @@ function SearchProduct({ product, index }) {
         <h3 className="find-card__name">
           <Link to={productTo}>{product.name}</Link>
         </h3>
+        {product.stock !== 'in-stock' ? (
+          <p className={`find-card__stock find-card__stock--${product.stock}`}>
+            {stockLabels[product.stock]}
+          </p>
+        ) : null}
         <p className="find-card__meta">
           <span className="find-card__price">
-            {formatPrice(product.price)}
             {hasCompare ? (
               <s className="find-card__original">{formatPrice(product.originalPrice)}</s>
             ) : null}
+            {formatPrice(product.price)}
           </span>
           {product.weight ? <span className="find-card__weight">{product.weight}</span> : null}
-        </p>
-        <p className={`find-card__stock find-card__stock--${product.stock}`}>
-          {stockLabels[product.stock]}
         </p>
       </div>
     </article>

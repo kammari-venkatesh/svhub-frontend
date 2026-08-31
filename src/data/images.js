@@ -1,4 +1,6 @@
 import heroFarm from '../assets/hero-farm.png'
+import authKitchen from '../assets/auth-kitchen.jpg'
+import nutriHero from '../assets/nutri-hero.jpg'
 
 const pexels = (id, w) =>
   `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`
@@ -8,13 +10,16 @@ const unsplash = (id, w) =>
 
 export const images = {
   hero: heroFarm,
+  authKitchen,
   nutriHub: unsplash('photo-1673158191698-f1550a68c422', 1400),
+  nutriHero,
   selfCare: pexels('6621464', 1400),
   farmland:
     'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/A_colorful_Paddy_field.JPG/1280px-A_colorful_Paddy_field.JPG',
   farmer: pexels('29733497', 1200),
   rice: unsplash('photo-1673158191698-f1550a68c422', 1200),
   cooking: pexels('14132109', 1200),
+  contactHero: authKitchen,
   ingredients: pexels('2802527', 1200),
   family: pexels('29733497', 1200),
   kullakar: unsplash('photo-1673158191698-f1550a68c422', 1000),

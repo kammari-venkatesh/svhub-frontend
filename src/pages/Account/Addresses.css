@@ -1,0 +1,325 @@
+.address-page {
+  --auth-error: #9b2c1a;
+}
+
+.address-page__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px 24px;
+  margin-top: 8px;
+}
+
+.address-page__head h2 {
+  margin: 0;
+}
+
+.address-page__lede {
+  max-width: 42ch;
+  margin: 12px 0 0;
+  color: var(--account-mute);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.7;
+}
+
+.address-cards {
+  display: grid;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.address-card {
+  min-width: 0;
+  padding: 24px 24px 18px;
+  border: 1px solid var(--account-line);
+  border-radius: var(--radius-card);
+  background: var(--white);
+}
+
+.address-card.is-default {
+  border-color: rgba(var(--sv-green-rgb), 0.38);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.address-card__top {
+  margin-bottom: 18px;
+}
+
+.address-card__badge,
+.address-card__label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  margin: 0;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.address-card__badge {
+  background: rgba(var(--leaf-green-rgb), 0.14);
+  color: var(--leaf-green);
+}
+
+.address-card__label {
+  padding: 0;
+  color: var(--terracotta);
+}
+
+.address-card__facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+}
+
+.address-card__facts .is-wide {
+  grid-column: 1 / -1;
+}
+
+.address-card__facts dt {
+  margin: 0 0 4px;
+  color: var(--terracotta);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.address-card__facts dd {
+  margin: 0;
+  color: var(--account-ink);
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.address-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin-top: 8px;
+  padding-top: 4px;
+}
+
+.address-card__confirm {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--account-line);
+}
+
+.address-card__confirm p {
+  margin: 0;
+  color: var(--account-ink);
+  font-size: 14px;
+}
+
+.account-sheet {
+  --auth-error: #9b2c1a;
+  --account-ink: var(--espresso-brown);
+  --account-mute: var(--charcoal-green);
+  --account-line: rgba(var(--charcoal-rgb), 0.12);
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.account-sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(59, 70, 50, 0.42);
+  cursor: pointer;
+}
+
+.account-sheet__panel {
+  position: relative;
+  z-index: 1;
+  width: min(560px, 100%);
+  max-height: min(88vh, 760px);
+  overflow: auto;
+  padding: 32px 36px 36px;
+  border: 1px solid var(--account-line);
+  border-radius: var(--radius-card);
+  background: var(--cream);
+  animation: account-sheet-in 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.account-sheet__handle {
+  display: none;
+}
+
+.account-sheet__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.account-sheet__header h2 {
+  margin: 8px 0 0;
+  color: var(--account-ink);
+  font-size: clamp(28px, 4vw, 36px);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.account-sheet__close {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--leaf-green);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.address-form {
+  display: grid;
+  gap: 20px;
+}
+
+.address-form__split {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr 0.8fr;
+  gap: 16px 20px;
+}
+
+.address-form .auth-field select {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 10px 28px 10px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(var(--charcoal-rgb), 0.22);
+  border-radius: 0;
+  background:
+    transparent
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%23532F1A' stroke-width='1.4' d='M1.5 1.5 6 6l4.5-4.5'/%3E%3C/svg%3E")
+    no-repeat right 2px center;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  appearance: none;
+}
+
+.address-form .auth-field select:focus {
+  outline: none;
+  border-bottom-color: var(--sv-green);
+}
+
+.address-form .auth-field.is-invalid select {
+  border-bottom-color: var(--auth-error);
+}
+
+.address-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  margin-top: 8px;
+}
+
+.address-form__actions .btn {
+  min-width: 180px;
+}
+
+@keyframes account-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (min-width: 1100px) {
+  .address-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 959px) {
+  .address-page__head .btn {
+    width: 100%;
+  }
+
+  .account-sheet {
+    padding: 0;
+    place-items: end stretch;
+  }
+
+  .account-sheet__panel {
+    width: 100%;
+    max-height: min(92vh, 820px);
+    padding: 10px 20px calc(20px + var(--safe-bottom));
+    border: 0;
+    border-radius: 20px 20px 0 0;
+    animation-name: account-drawer-in;
+  }
+
+  .account-sheet__handle {
+    display: block;
+    width: 40px;
+    height: 4px;
+    margin: 4px auto 12px;
+    border-radius: 99px;
+    background: rgba(var(--charcoal-rgb), 0.18);
+  }
+
+  .address-form__split {
+    grid-template-columns: 1fr;
+  }
+
+  .address-form__actions .btn {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .address-card {
+    padding: 22px 18px 14px;
+  }
+
+  .address-card__facts {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .address-page__head h2 {
+    font-size: 28px;
+  }
+}
+
+@keyframes account-drawer-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .account-sheet__panel {
+    animation: none;
+  }
+}

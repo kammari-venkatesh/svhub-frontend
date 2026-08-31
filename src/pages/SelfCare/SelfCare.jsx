@@ -1,17 +1,15 @@
 import { useEffect } from 'react'
-import ProductCard from '../../components/ui/ProductCard.jsx'
 import Reveal from '../../components/ui/Reveal.jsx'
 import {
-  selfCare,
   selfCareClose,
   selfCareCollectionIntro,
   selfCareIntro,
   selfCareProducts,
-  selfCareStills,
   selfCareStory,
 } from '../../data/selfCare.js'
 import HomeScroll from '../Home/HomeScroll.jsx'
 import '../Home/Home.css'
+import ShopProduct from '../Shop/ShopProduct.jsx'
 import './SelfCare.css'
 
 function Arrow({ size = 14 }) {
@@ -28,28 +26,15 @@ function Arrow({ size = 14 }) {
   )
 }
 
-function BatchNote() {
+function splitHero(text) {
+  const comma = text.indexOf(',')
+  if (comma === -1) return text
   return (
-    <span className="sc-note">
-      <span className="sc-note__label">made in small batches</span>
-      <svg className="sc-note__arrow" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-        <path
-          d="M4 14c3.2-1.8 6.4-5.4 9.8-10.2M13.2 3.2h4.2v4.1"
-          stroke="currentColor"
-          strokeWidth="1.35"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-      <svg className="sc-note__mark" viewBox="0 0 168 14" fill="none" aria-hidden="true">
-        <path
-          d="M2.4 9.6c18.8-4.8 36.2 2.8 55.1.4 16.6-2.1 31.8-6.6 48.4-4.2 14.2 2 27.6 5.8 42.6 2.4 7.4-1.7 14.2-4.2 17.8-1.6"
-          stroke="currentColor"
-          strokeWidth="1.4"
-          strokeLinecap="round"
-        />
-      </svg>
-    </span>
+    <>
+      {text.slice(0, comma + 1)}
+      <br />
+      {text.slice(comma + 1).trim()}
+    </>
   )
 }
 
@@ -57,41 +42,17 @@ function CareHero() {
   return (
     <section className="sc-hero" aria-labelledby="self-care-hero-heading">
       <div className="sc-hero__media" aria-hidden="true">
-        <img src={selfCareIntro.image} alt="" />
+        <img src={selfCareIntro.image} alt="" fetchPriority="high" />
         <span className="sc-hero__veil" />
-        <span className="sc-hero__grain" />
       </div>
 
-      <span className="sc-hero__watermark" aria-hidden="true">
-        Care
-      </span>
-
-      <div className="home-container sc-hero__layout">
-        <div className="sc-hero__copy">
-          <p className="sc-hero__eyebrow">
-            <span className="sc-hero__dot" />
-            {selfCareIntro.eyebrow}
-            <span aria-hidden="true"> · </span>
-            {selfCareIntro.kicker}
-          </p>
-          <h1 id="self-care-hero-heading">{selfCareIntro.title}</h1>
-          <p className="sc-hero__text">{selfCareIntro.copy}</p>
-          <a href={selfCareIntro.ctaHref} className="sc-hero__cta">
-            <span>{selfCareIntro.cta}</span>
-            <Arrow size={15} />
-          </a>
-        </div>
-
-        <ul className="sc-hero__stills">
-          {selfCareStills.map((still) => (
-            <li key={still.label}>
-              <figure>
-                <img src={still.src} alt={still.alt} />
-                <figcaption>{still.label}</figcaption>
-              </figure>
-            </li>
-          ))}
-        </ul>
+      <div className="sc-hero__copy">
+        <p className="sc-hero__eyebrow">{selfCareIntro.eyebrow}</p>
+        <h1 id="self-care-hero-heading">{splitHero(selfCareIntro.title)}</h1>
+        <p className="sc-hero__text">{selfCareIntro.copy}</p>
+        <a href={selfCareIntro.ctaHref} className="sc-btn sc-btn--leaf">
+          {selfCareIntro.cta}
+        </a>
       </div>
     </section>
   )
@@ -101,27 +62,21 @@ function CareCollection() {
   return (
     <section
       id="handmade-soaps"
-      className="home-section home-section--off sc-collection"
+      className="sc-collection"
       aria-labelledby="self-care-collection-heading"
     >
       <div className="home-container">
-        <Reveal className="sc-header">
-          <div>
-            <p className="sc-eyebrow">{selfCareCollectionIntro.eyebrow}</p>
-            <h2 id="self-care-collection-heading">{selfCareCollectionIntro.title}</h2>
-            <BatchNote />
-          </div>
-          <div className="sc-header__lede">
-            <p className="sc-header__count">06 Handmade Soaps</p>
-            <p className="sc-header__copy">{selfCareCollectionIntro.copy}</p>
-          </div>
+        <Reveal className="sc-collection__intro">
+          <h2 id="self-care-collection-heading">{selfCareCollectionIntro.title}</h2>
+          <span className="sc-rule" aria-hidden="true" />
+          <p>{selfCareCollectionIntro.copy}</p>
         </Reveal>
 
         {selfCareProducts.length ? (
-          <Reveal as="ul" className="home-stagger sc-product-grid">
-            {selfCareProducts.map((product) => (
+          <Reveal as="ul" className="home-stagger sc-grid">
+            {selfCareProducts.map((product, index) => (
               <li key={product.id}>
-                <ProductCard product={product} />
+                <ShopProduct product={product} index={index} />
               </li>
             ))}
           </Reveal>
@@ -139,32 +94,29 @@ function CareCollection() {
 
 function CareStory() {
   return (
-    <section className="home-section home-section--white sc-story" aria-labelledby="self-care-story-heading">
+    <section className="sc-story" aria-labelledby="self-care-story-heading">
+      <span className="sc-story__glow" aria-hidden="true" />
       <div className="home-container sc-story__layout">
         <Reveal className="sc-story__copy">
           <p className="sc-eyebrow">{selfCareStory.eyebrow}</p>
           <h2 id="self-care-story-heading">{selfCareStory.title}</h2>
+          <span className="sc-rule sc-rule--terracotta" aria-hidden="true" />
+          <p className="sc-story__lede">{selfCareStory.lede}</p>
           <p className="sc-story__text">{selfCareStory.copy}</p>
-
-          <ol className="sc-story__principles">
-            {selfCareStory.principles.map((item) => (
-              <li key={item.number}>
-                <span>{item.number}</span>
-                <div>
-                  <h3>{item.title}</h3>
-                  <p>{item.copy}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+          <a href={selfCareStory.ctaHref} className="sc-story__link">
+            {selfCareStory.cta}
+            <Arrow size={14} />
+          </a>
         </Reveal>
 
-        <Reveal className="sc-story__figures" delay={80}>
-          {selfCareStory.figures.map((figure, index) => (
-            <figure key={figure.alt} className={`sc-story__figure sc-story__figure--${index + 1}`}>
-              <img src={figure.src} alt={figure.alt} loading="lazy" decoding="async" />
-            </figure>
-          ))}
+        <Reveal className="sc-story__visual" delay={80}>
+          <figure className="sc-story__figure">
+            <img src={selfCareStory.figure.src} alt={selfCareStory.figure.alt} loading="lazy" decoding="async" />
+          </figure>
+          <aside className="sc-story__card">
+            <h3>{selfCareStory.cardTitle}</h3>
+            <p>{selfCareStory.cardCopy}</p>
+          </aside>
         </Reveal>
       </div>
     </section>
@@ -174,26 +126,13 @@ function CareStory() {
 function CareClose() {
   return (
     <section className="sc-close" aria-labelledby="self-care-close-heading">
-      <div className="sc-close__media" aria-hidden="true">
-        <img src={selfCareClose.image} alt="" />
-        <span className="sc-close__veil" />
-        <span className="sc-close__grain" />
-      </div>
-
-      <span className="sc-close__watermark" aria-hidden="true">
-        {selfCare.name}
-      </span>
-
-      <div className="home-container sc-close__layout">
-        <Reveal className="sc-close__main">
-          <p className="sc-close__eyebrow">{selfCareClose.eyebrow}</p>
-          <h2 id="self-care-close-heading">{selfCareClose.headline}</h2>
-          <p className="sc-close__copy">{selfCareClose.copy}</p>
-          <a href={selfCareClose.ctaHref} className="sc-close__cta">
-            <span>{selfCareClose.cta}</span>
-            <Arrow size={15} />
-          </a>
-        </Reveal>
+      <span className="sc-close__dots" aria-hidden="true" />
+      <div className="sc-close__inner">
+        <h2 id="self-care-close-heading">{selfCareClose.headline}</h2>
+        <p>{selfCareClose.copy}</p>
+        <a href={selfCareClose.ctaHref} className="sc-btn sc-btn--clay">
+          {selfCareClose.cta}
+        </a>
       </div>
     </section>
   )

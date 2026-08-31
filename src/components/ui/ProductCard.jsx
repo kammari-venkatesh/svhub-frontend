@@ -6,22 +6,21 @@ import { formatPrice } from '../../utils/money.js'
 import './ProductCard.css'
 
 const stockLabels = {
-  'in-stock': 'In stock',
   'low-stock': 'Low stock',
   'out-of-stock': 'Out of stock',
 }
 
 function ProductCard({ product }) {
-  const outOfStock = product.stock === 'out-of-stock'
   const house = getStorefront(product.storefront)
   const hasCompare = Boolean(product.originalPrice && product.originalPrice > product.price)
   const productTo = productHref(product)
   const accent = house?.accentToken === 'terracotta' ? 'terracotta' : 'espresso'
+  const accentColor = house?.accentToken === 'terracotta' ? 'var(--terracotta)' : 'var(--charcoal-green)'
 
   return (
     <article
       className={`product-card product-card--${accent}`}
-      style={{ '--card-accent': house?.accent ?? 'var(--espresso-brown)' }}
+      style={{ '--card-accent': accentColor, '--item-accent': accentColor }}
     >
       <div className="product-card__frame">
         <Link to={productTo} className="product-card__media" aria-label={`View ${product.name}`}>
@@ -32,7 +31,7 @@ function ProductCard({ product }) {
             <span>{product.discount}% off</span>
           </p>
         ) : null}
-        <div className="product-card__step" onClick={(event) => event.stopPropagation()}>
+        <div className="product-card__step">
           <CartStepper product={product} />
         </div>
       </div>
@@ -42,6 +41,11 @@ function ProductCard({ product }) {
         <h3 className="product-card__name">
           <Link to={productTo}>{product.name}</Link>
         </h3>
+        {product.stock !== 'in-stock' ? (
+          <p className={`product-card__stock product-card__stock--${product.stock}`}>
+            {stockLabels[product.stock]}
+          </p>
+        ) : null}
         <p className="product-card__meta">
           <span className="product-card__price">
             {hasCompare ? (
@@ -50,9 +54,6 @@ function ProductCard({ product }) {
             {formatPrice(product.price)}
           </span>
           {product.weight ? <span className="product-card__weight">{product.weight}</span> : null}
-        </p>
-        <p className={`product-card__stock product-card__stock--${product.stock}`}>
-          {stockLabels[product.stock]}
         </p>
       </div>
     </article>

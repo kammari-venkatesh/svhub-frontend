@@ -1,60 +1,71 @@
 .cart-step {
   --step-ease: 220ms ease;
+  --step-fill: var(--item-accent, var(--card-accent, var(--charcoal-green)));
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 36px;
-  border-radius: var(--radius-pill);
+  flex-shrink: 0;
   font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  box-shadow: 0 6px 18px rgba(59, 70, 50, 0.12);
   user-select: none;
 }
 
 .cart-step--add {
-  min-width: 72px;
-  padding: 0 16px;
-  border: 1.5px solid var(--item-accent, var(--card-accent, var(--espresso-brown)));
-  background: var(--white);
-  color: var(--item-accent, var(--card-accent, var(--espresso-brown)));
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--step-fill);
+  color: var(--white);
   cursor: pointer;
   transition:
     background-color var(--step-ease),
-    color var(--step-ease);
+    transform var(--step-ease);
+}
+
+.cart-step--add svg {
+  display: block;
 }
 
 .cart-step--add:hover {
-  background: var(--item-accent, var(--card-accent, var(--espresso-brown)));
-  color: var(--white);
+  background: var(--leaf-green);
+  transform: scale(1.04);
+}
+
+.cart-step--terracotta.cart-step--add:hover,
+.shop-item--terracotta .cart-step--add:hover,
+.product-card--terracotta .cart-step--add:hover,
+.find-card--terracotta .cart-step--add:hover,
+.featured-item--terracotta .cart-step--add:hover {
+  background: var(--espresso-brown);
 }
 
 .cart-step--qty {
-  min-width: 104px;
+  min-width: 108px;
+  height: 44px;
   padding: 0 4px;
-  background: var(--item-accent, var(--card-accent, var(--espresso-brown)));
+  border-radius: 999px;
+  background: var(--step-fill);
   color: var(--white);
 }
 
 .cart-step--oos {
-  min-width: 0;
-  padding: 0 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   border: 1.5px solid rgba(var(--charcoal-rgb), 0.18);
   background: var(--white);
   color: var(--charcoal-green);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  box-shadow: none;
+  font-size: 16px;
+  line-height: 1;
 }
 
 .cart-step__btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  min-height: 36px;
+  width: 36px;
+  height: 44px;
   border: 0;
   background: transparent;
   color: inherit;
@@ -73,23 +84,28 @@
   text-align: center;
   font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0;
-  text-transform: none;
 }
 
 .cart-step--add:focus-visible,
 .cart-step__btn:focus-visible {
   outline: 2px solid var(--sv-green);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
 @media (hover: none) {
-  .cart-step {
-    min-height: 40px;
+  .cart-step--add:hover {
+    transform: none;
   }
 
-  .cart-step__btn {
-    min-height: 40px;
-    width: 36px;
+  .cart-step--add,
+  .cart-step--qty,
+  .cart-step--oos {
+    width: 44px;
+    min-height: 44px;
+  }
+
+  .cart-step--qty {
+    width: auto;
+    min-width: 112px;
   }
 }

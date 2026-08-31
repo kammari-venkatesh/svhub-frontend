@@ -64,11 +64,12 @@ function FeaturedItem({ product, layout }) {
   const showStock = product.stock !== 'in-stock'
   const hasCompare = Boolean(product.originalPrice && product.originalPrice > product.price)
   const productTo = productHref(product)
+  const accentColor = house?.accentToken === 'terracotta' ? 'var(--terracotta)' : 'var(--charcoal-green)'
 
   return (
     <li
-      className={`featured-item featured-item--${layout}${product.discount ? ' featured-item--sale' : ''}`}
-      style={{ '--item-accent': house?.accent ?? 'var(--espresso-brown)' }}
+      className={`featured-item featured-item--${layout}${house?.accentToken === 'terracotta' ? ' featured-item--terracotta' : ''}${product.discount ? ' featured-item--sale' : ''}`}
+      style={{ '--item-accent': accentColor }}
     >
       <article>
         <div className="featured-item__frame">
@@ -89,7 +90,7 @@ function FeaturedItem({ product, layout }) {
               <span>{product.discount}% off</span>
             </p>
           ) : null}
-          <div className="featured-item__step" onClick={(event) => event.stopPropagation()}>
+          <div className="featured-item__step">
             <CartStepper product={product} />
           </div>
         </div>

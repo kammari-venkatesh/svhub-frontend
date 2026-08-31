@@ -62,6 +62,14 @@ function ProductGallery({ images, name, discount, accent }) {
         ) : null}
 
         {images.length > 1 ? (
+          <div className="pdp-gallery__dots" aria-hidden="true">
+            {images.map((image, index) => (
+              <span key={`${image.src}-dot`} className={index === active ? 'is-active' : undefined} />
+            ))}
+          </div>
+        ) : null}
+
+        {images.length > 1 ? (
           <>
             <button
               type="button"

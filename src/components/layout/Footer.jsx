@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Logo from '../brand/Logo.jsx'
+import { contact } from '../../data/contact.js'
 import { useInView } from '../../hooks/useInView.js'
 import './Footer.css'
 
@@ -15,10 +16,10 @@ const companyLinks = [
 ]
 
 const helpLinks = [
-  { to: '/shipping', label: 'Shipping Policy' },
-  { to: '/refund', label: 'Refund Policy' },
-  { to: '/privacy', label: 'Privacy Policy' },
-  { to: '/terms', label: 'Terms & Conditions' },
+  { to: '/shipping-policy', label: 'Shipping Policy' },
+  { to: '/refund-policy', label: 'Refund Policy' },
+  { to: '/privacy-policy', label: 'Privacy Policy' },
+  { to: '/terms-and-conditions', label: 'Terms & Conditions' },
 ]
 
 function Arrow() {
@@ -53,7 +54,7 @@ function NavGroup({ title, links }) {
   )
 }
 
-function Footer() {
+function Footer({ compact = false }) {
   const { ref, visible } = useInView({ rootMargin: '0px 0px -8% 0px', threshold: 0.08 })
 
   function scrollTop() {
@@ -63,7 +64,7 @@ function Footer() {
   }
 
   return (
-    <footer className={`footer${visible ? ' is-in' : ''}`} ref={ref}>
+    <footer className={`footer${compact ? ' footer--compact' : ''}${visible ? ' is-in' : ''}`} ref={ref}>
       <span className="footer__grain" aria-hidden="true" />
       <span className="footer__watermark" aria-hidden="true">
         Goodness
@@ -107,22 +108,22 @@ function Footer() {
             <h3>Contact</h3>
             <p className="footer__hello">Come say hello</p>
             <ul>
-              <li>Coimbatore, Tamil Nadu</li>
+              <li>{contact.city}</li>
               <li>
-                <a href="tel:+919876543210">
-                  +91 98765 43210
+                <a href={`tel:${contact.phoneTel}`}>
+                  {contact.phoneDisplay}
                   <Arrow />
                 </a>
               </li>
               <li>
-                <a href="https://wa.me/919876543210" target="_blank" rel="noreferrer">
+                <a href={contact.whatsappUrl} target="_blank" rel="noreferrer">
                   WhatsApp
                   <Arrow />
                 </a>
               </li>
               <li>
-                <a href="mailto:hello@svhub.in">
-                  hello@svhub.in
+                <a href={`mailto:${contact.email}`}>
+                  {contact.email}
                   <Arrow />
                 </a>
               </li>

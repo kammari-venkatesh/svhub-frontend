@@ -330,9 +330,9 @@ function CartPage() {
                   <strong>{formatPrice(subtotal)}</strong>
                 </div>
 
-                <button type="button" className="cart-btn cart-btn--solid">
+                <Link to="/checkout" className="cart-btn cart-btn--solid">
                   Proceed to Checkout
-                </button>
+                </Link>
                 <Link to="/shop" className="cart-btn cart-btn--ghost">
                   Continue Shopping
                 </Link>

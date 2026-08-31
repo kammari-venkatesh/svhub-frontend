@@ -129,7 +129,14 @@ function Navbar() {
           <Link to="/search" className="navbar__icon navbar__icon--desktop" aria-label="Search products">
             <IconSearch />
           </Link>
-          <Link to="/account" className="navbar__icon navbar__icon--desktop" aria-label="Account">
+          <Link
+            to="/account"
+            className={`navbar__icon navbar__icon--desktop${
+              pathname.startsWith('/account') ? ' is-active' : ''
+            }`}
+            aria-current={pathname.startsWith('/account') ? 'page' : undefined}
+            aria-label="Account"
+          >
             <IconAccount />
           </Link>
           <Link to="/cart" className="navbar__icon" aria-label={`Cart, ${count} items`}>

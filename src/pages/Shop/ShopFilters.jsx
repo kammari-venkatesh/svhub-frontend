@@ -9,6 +9,7 @@ function ShopFilters({
   searchValue = '',
   idPrefix = 'shop',
   showSearch = true,
+  showStorefront = true,
   lockedCategory = false,
   searchPlaceholder = 'Search rice, pickles, soaps…',
 }) {
@@ -46,7 +47,7 @@ function ShopFilters({
         </div>
       ) : null}
 
-      {!lockedCategory ? (
+      {showStorefront && !lockedCategory ? (
         <fieldset className="shop-filters__block">
           <legend className="shop-filters__label">Storefront</legend>
           <div className="shop-filters__choices">

@@ -1,0 +1,368 @@
+/* ==================================================
+   SV HUB ABOUT PAGE — MINIMAL EDITORIAL STORY RAIL
+   ================================================== */
+
+.about-story {
+  --story-progress: 0;
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  column-gap: 48px;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: max(24px, var(--pad-x));
+  position: relative;
+  align-items: stretch;
+}
+
+.story-content {
+  min-width: 0;
+}
+
+/* ==================================================
+   DESKTOP STORY RAIL COLUMN
+   ================================================== */
+
+.story-rail {
+  position: relative;
+  align-self: stretch;
+  min-height: 100%;
+}
+
+.story-rail__sticky {
+  position: sticky;
+  top: max(calc(var(--nav-height, 84px) + 16px), calc(50vh - 280px));
+  height: 560px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 5;
+}
+
+.story-rail__track-container {
+  position: relative;
+  height: 560px;
+  width: 100%;
+}
+
+/* Track spine: spans exactly from center of marker 01 (top: 12px) to marker 05 (bottom: 12px) */
+.story-rail__spine {
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  left: 37px;
+  width: 1px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.story-rail__track {
+  position: absolute;
+  inset: 0;
+  width: 1px;
+  background: #d8d4c8;
+}
+
+.story-rail__fill {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  margin-left: -1px;
+  background: var(--leaf-green);
+  transform: scaleY(var(--story-progress, 0));
+  transform-origin: top center;
+  will-change: transform;
+}
+
+/* Marker list */
+.story-rail__list {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.story-rail__item {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.story-rail__btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: max-content;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.story-rail__btn:focus-visible {
+  outline: 2px solid var(--sv-green);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* Numbers: Left of the marker */
+.story-rail__num {
+  width: 20px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: #9e9a8e;
+  transition: color 220ms ease;
+  flex-shrink: 0;
+}
+
+.story-rail__item.is-current .story-rail__num {
+  color: var(--espresso-brown);
+  font-weight: 600;
+}
+
+.story-rail__item.is-done .story-rail__num {
+  color: var(--leaf-green);
+  font-weight: 500;
+}
+
+/* Marker Node Wrapper */
+.story-rail__node {
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+/* Future marker: 7px circle, border: 1px solid #BDB9AD, background: cream */
+.story-rail__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid #bdb9ad;
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    width 220ms ease,
+    height 220ms ease;
+}
+
+/* Current marker: 10px circle, background: deep chocolate, subtle olive outer ring */
+.story-rail__item.is-current .story-rail__dot {
+  width: 10px;
+  height: 10px;
+  border: none;
+  background: var(--espresso-brown);
+  box-shadow: 0 0 0 3px rgba(110, 140, 40, 0.28);
+  animation: marker-pop 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Completed marker: 8px circle, background: muted olive with check */
+.story-rail__item.is-done .story-rail__dot {
+  width: 8px;
+  height: 8px;
+  border: none;
+  background: var(--leaf-green);
+}
+
+.story-rail__check {
+  width: 6px;
+  height: 6px;
+  display: block;
+  animation: check-pop 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Active / Hover label */
+.story-rail__label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--espresso-brown);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.story-rail__item.is-current .story-rail__label,
+.story-rail__btn:hover .story-rail__label,
+.story-rail__btn:focus-visible .story-rail__label {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.story-rail__btn:hover .story-rail__dot,
+.story-rail__btn:focus-visible .story-rail__dot {
+  transform: scale(1.18);
+}
+
+@keyframes marker-pop {
+  from {
+    transform: scale(0.85);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes check-pop {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ==================================================
+   MOBILE HORIZONTAL STORY BAR (<768px)
+   ================================================== */
+
+.story-mobile-bar {
+  display: none;
+}
+
+@media (max-width: 1099px) {
+  .about-story {
+    grid-template-columns: 120px minmax(0, 1fr);
+    column-gap: 32px;
+  }
+}
+
+@media (max-width: 767px) {
+  .about-story {
+    display: block;
+    padding-inline: 0;
+  }
+
+  .story-rail {
+    display: none;
+  }
+
+  .story-mobile-bar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: sticky;
+    top: calc(var(--nav-height) + 10px);
+    z-index: 20;
+    height: 44px;
+    padding: 0 max(var(--pad-x), var(--safe-left));
+    background: rgba(250, 247, 242, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(var(--charcoal-rgb), 0.08);
+  }
+
+  .story-mobile-bar__content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .story-mobile-bar__counter {
+    color: var(--leaf-green);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+  }
+
+  .story-mobile-bar__sep {
+    color: rgba(var(--charcoal-rgb), 0.3);
+    font-size: 11px;
+  }
+
+  .story-mobile-bar__label {
+    color: var(--espresso-brown);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    animation: mobile-label-in 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .story-mobile-bar__spine {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    overflow: hidden;
+  }
+
+  .story-mobile-bar__track {
+    position: absolute;
+    inset: 0;
+    background: #d8d4c8;
+  }
+
+  .story-mobile-bar__fill {
+    position: absolute;
+    inset: 0;
+    background: var(--leaf-green);
+    transform: scaleX(var(--story-progress, 0));
+    transform-origin: left center;
+    will-change: transform;
+  }
+}
+
+@keyframes mobile-label-in {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ==================================================
+   REDUCED MOTION
+   ================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .story-rail__dot,
+  .story-rail__label,
+  .story-rail__num,
+  .story-rail__check,
+  .story-mobile-bar__label {
+    transition: none !important;
+    animation: none !important;
+  }
+}

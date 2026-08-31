@@ -1,0 +1,237 @@
+.orders__header {
+  margin-bottom: 8px;
+}
+
+.orders__eyebrow {
+  margin: 0;
+  color: var(--terracotta);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.orders__title {
+  max-width: 8em;
+  margin: 12px 0 0;
+  color: var(--espresso-brown);
+  font-size: clamp(36px, 4.4vw, 52px);
+  letter-spacing: -0.034em;
+  line-height: 1.08;
+}
+
+.orders__copy {
+  max-width: 42ch;
+  margin: 14px 0 0;
+  color: var(--charcoal-green);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.7;
+}
+
+.orders__count {
+  margin: 22px 0 0;
+  color: var(--espresso-brown);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.orders__table-wrap {
+  margin-top: 20px;
+  overflow-x: auto;
+  border-top: 1px solid rgba(var(--charcoal-rgb), 0.12);
+}
+
+.orders__table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  color: var(--charcoal-green);
+  font-size: 13px;
+}
+
+.orders__table th,
+.orders__table td {
+  padding: 18px 16px 18px 0;
+  text-align: left;
+  vertical-align: middle;
+  font-weight: 400;
+}
+
+.orders__table thead th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  color: var(--espresso-brown);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(var(--charcoal-rgb), 0.12);
+}
+
+.orders__table tbody th {
+  color: var(--espresso-brown);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.orders__table tbody th a {
+  color: inherit;
+}
+
+.orders__table tbody th a:hover,
+.orders__table tbody th a:focus-visible {
+  color: var(--leaf-green);
+}
+
+.orders__table tbody tr {
+  border-bottom: 1px solid rgba(var(--charcoal-rgb), 0.1);
+  transition: background-color 280ms ease;
+}
+
+.orders__table tbody tr:hover {
+  background: rgba(var(--sv-green-rgb), 0.05);
+}
+
+.orders__table .account-row__preview {
+  max-width: 220px;
+}
+
+.orders__table .account-row__preview img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.orders__amount {
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.orders__view {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  color: var(--leaf-green);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.orders__view svg {
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.orders__view:hover svg,
+.orders__view:focus-visible svg {
+  transform: translateX(4px);
+}
+
+.orders__view:focus-visible,
+.orders__table tbody th a:focus-visible {
+  outline: 2px solid var(--sv-green);
+  outline-offset: 3px;
+}
+
+.orders__cards {
+  display: none;
+}
+
+@media (max-width: 959px) {
+  .orders__title {
+    max-width: none;
+  }
+
+  .orders__table-wrap {
+    display: none;
+  }
+
+  .orders__cards {
+    display: grid;
+    gap: 14px;
+    margin-top: 24px;
+  }
+
+  .orders__card {
+    display: grid;
+    gap: 14px;
+    padding: 20px 18px 16px;
+    border: 1px solid rgba(var(--charcoal-rgb), 0.1);
+    border-radius: 16px;
+    background: var(--white);
+  }
+
+  .orders__card-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .orders__card-number {
+    margin: 0;
+    color: var(--espresso-brown);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .orders__card-date {
+    margin: 0;
+    color: var(--charcoal-green);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .orders__card-amount {
+    margin: 0;
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .orders__card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .orders__card .account-row__preview img {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .orders__title {
+    font-size: clamp(28px, 9vw, 36px);
+  }
+
+  .orders__card {
+    padding: 18px 16px 14px;
+  }
+
+  .orders__card-top {
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orders__table tbody tr,
+  .orders__view svg {
+    transition: none;
+  }
+}

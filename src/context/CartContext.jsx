@@ -50,7 +50,11 @@ export function CartProvider({ children }) {
       return items.find((item) => lineKey(item) === key)?.quantity ?? 0
     }
 
-    return { items, count, addItem, setItemQuantity, quantityOf }
+    function clearCart() {
+      setItems([])
+    }
+
+    return { items, count, addItem, setItemQuantity, quantityOf, clearCart }
   }, [items])
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>

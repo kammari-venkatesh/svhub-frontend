@@ -6,45 +6,10 @@ import { getStorefront } from '../data/storefronts.js'
 import './PlaceholderPage.css'
 
 const copy = {
-  '/about': {
-    eyebrow: 'About',
-    title: 'The SV Hub story',
-    text: 'A longer farm-to-home story is coming. For now, the homepage holds the promise.',
-  },
-  '/contact': {
-    eyebrow: 'Contact',
-    title: 'We are in Coimbatore',
-    text: 'Write to hello@svhub.in or call +91 98765 43210. A full contact page will follow.',
-  },
   '/search': {
     eyebrow: 'Search',
     title: 'Search will arrive with the shop',
     text: 'Until then, browse the featured products on the homepage.',
-  },
-  '/account': {
-    eyebrow: 'Account',
-    title: 'Your account',
-    text: 'Sign in and order history will live here in a later version.',
-  },
-  '/privacy': {
-    eyebrow: 'Policies',
-    title: 'Privacy Policy',
-    text: 'A full policy page will replace this placeholder. Your data will be handled with care.',
-  },
-  '/terms': {
-    eyebrow: 'Policies',
-    title: 'Terms & Conditions',
-    text: 'The complete terms will be published here before orders go live.',
-  },
-  '/shipping': {
-    eyebrow: 'Policies',
-    title: 'Shipping Policy',
-    text: 'Shipping from Coimbatore will be explained here in detail.',
-  },
-  '/refund': {
-    eyebrow: 'Policies',
-    title: 'Refund Policy',
-    text: 'Refund and cancellation details will be listed here.',
   },
 }
 
@@ -85,7 +50,9 @@ function PlaceholderPage() {
     <section className="placeholder">
       <div className="container">
         <SectionHeader eyebrow={page.eyebrow} title={page.title} copy={page.text} />
-        <Button to="/">Back home</Button>
+        <div className="placeholder__actions">
+          <Button to="/">Back home</Button>
+        </div>
       </div>
     </section>
   )

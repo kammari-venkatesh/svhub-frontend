@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import ProductCard from '../../components/ui/ProductCard.jsx'
-import { getCategoryBySlug } from '../../data/categories.js'
+import { getCategoriesByStorefront, getCategoryBySlug } from '../../data/categories.js'
 import {
+  PAGE_SIZE,
   countListingFilters,
   listingParamsToSearch,
   parseListingParams,
@@ -11,12 +11,10 @@ import {
 } from '../../data/shop.js'
 import { getStorefront } from '../../data/storefronts.js'
 import ShopFilters from '../Shop/ShopFilters.jsx'
+import ShopProduct from '../Shop/ShopProduct.jsx'
 import ShopSheet from '../Shop/ShopSheet.jsx'
 import '../Shop/Shop.css'
 import './Category.css'
-
-const HEADLINE = 'Traditional Goodness, Made for Everyday Life.'
-const LISTING_PAGE_SIZE = 6
 
 function Arrow({ size = 14 }) {
   return (
@@ -32,28 +30,55 @@ function Arrow({ size = 14 }) {
   )
 }
 
+function FilterIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M2.5 3.5h11M4.5 8h7M6.5 12.5h3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+function SortIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M4 5.5 6.5 3 9 5.5M6.5 3v10M12 10.5 9.5 13 7 10.5M9.5 13V3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function pagerPages(current, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+
+  const pages = [1]
+  const start = Math.max(2, current - 1)
+  const end = Math.min(total - 1, current + 1)
+
+  if (start > 2) pages.push('ellipsis-start')
+  for (let n = start; n <= end; n += 1) pages.push(n)
+  if (end < total - 1) pages.push('ellipsis-end')
+  pages.push(total)
+  return pages
+}
+
 function ProductSkeleton() {
   return (
-    <div className="shop-skel category-skel" aria-hidden="true">
+    <div className="shop-skel" aria-hidden="true">
       <span className="shop-skel__media" />
       <span className="shop-skel__line shop-skel__line--type" />
       <span className="shop-skel__line shop-skel__line--name" />
       <span className="shop-skel__line shop-skel__line--price" />
-      <span className="shop-skel__line shop-skel__line--cta" />
     </div>
-  )
-}
-
-function splitHeadline(text) {
-  const comma = text.indexOf(',')
-  if (comma === -1) return text
-
-  return (
-    <>
-      {text.slice(0, comma + 1)}
-      <br />
-      {text.slice(comma + 1).trim()}
-    </>
   )
 }
 
@@ -61,33 +86,43 @@ function Category() {
   const { slug } = useParams()
   const category = getCategoryBySlug(slug)
   const house = category ? getStorefront(category.storefront) : null
-  const accent = house?.accentToken === 'terracotta' ? 'terracotta' : 'espresso'
+  const siblings = category ? getCategoriesByStorefront(category.storefront) : []
 
   const [searchParams, setSearchParams] = useSearchParams()
   const filters = useMemo(() => parseListingParams(searchParams), [searchParams])
   const [queryDraft, setQueryDraft] = useState(filters.q)
   const [sheet, setSheet] = useState(null)
-  const [visible, setVisible] = useState(LISTING_PAGE_SIZE)
-  const [loading, setLoading] = useState(true)
+  const [booting, setBooting] = useState(true)
+  const mainRef = useRef(null)
+  const pageReady = useRef(false)
   const prevSlug = useRef(slug)
 
   const queryFilters = useMemo(
     () => ({
       ...filters,
+      storefront: category?.storefront ?? 'all',
       categoryIds: category ? [category.slug] : ['__none__'],
     }),
     [filters, category],
   )
 
   const results = useMemo(() => (category ? queryShop(queryFilters) : []), [category, queryFilters])
-  const shown = results.slice(0, visible)
+  const totalPages = Math.max(1, Math.ceil(results.length / PAGE_SIZE))
+  const page = Math.min(filters.page || 1, totalPages)
+  const start = results.length === 0 ? 0 : (page - 1) * PAGE_SIZE
+  const shown = results.slice(start, start + PAGE_SIZE)
+  const rangeStart = results.length === 0 ? 0 : start + 1
+  const rangeEnd = start + shown.length
   const activeCount = countListingFilters(filters)
   const sortLabel = sortOptions.find((option) => option.id === filters.sort)?.label ?? 'Featured'
-  const allUnavailable = results.length > 0 && results.every((product) => product.stock === 'out-of-stock')
-  const showingUnavailable = filters.availability === 'out-of-stock'
+  const countLabel = `${results.length} ${results.length === 1 ? 'product' : 'products'}`
+  const catalogMeta = house ? `${countLabel} · ${house.kicker}` : countLabel
+  const pages = pagerPages(page, totalPages)
   const searchPlaceholder = category
     ? `Search ${category.name.toLowerCase()}…`
     : 'Search rice, pickles, soaps…'
+  const allUnavailable = results.length > 0 && results.every((product) => product.stock === 'out-of-stock')
+  const showingUnavailable = filters.availability === 'out-of-stock'
 
   const applyFilters = useCallback(
     (next) => {
@@ -97,17 +132,23 @@ function Category() {
   )
 
   function handleFilterChange(next) {
-    applyFilters({ ...next, q: queryDraft })
+    applyFilters({ ...next, q: queryDraft, page: 1 })
+  }
+
+  function setPage(nextPage) {
+    applyFilters({ ...filters, q: queryDraft, page: nextPage })
   }
 
   useEffect(() => {
     window.scrollTo(0, 0)
     setSheet(null)
+    setBooting(true)
 
     if (prevSlug.current !== slug) {
       setQueryDraft('')
       setSearchParams(new URLSearchParams(), { replace: true })
       prevSlug.current = slug
+      pageReady.current = false
     }
   }, [slug, setSearchParams])
 
@@ -118,18 +159,31 @@ function Category() {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       if (queryDraft.trim() === filters.q) return
-      applyFilters({ ...filters, q: queryDraft })
+      applyFilters({ ...filters, q: queryDraft, page: 1 })
     }, 220)
 
     return () => window.clearTimeout(timer)
   }, [queryDraft, filters, applyFilters])
 
   useEffect(() => {
-    setVisible(LISTING_PAGE_SIZE)
-    setLoading(true)
-    const timer = window.setTimeout(() => setLoading(false), 280)
+    const timer = window.setTimeout(() => setBooting(false), 160)
     return () => window.clearTimeout(timer)
-  }, [searchParams, slug])
+  }, [slug])
+
+  useEffect(() => {
+    if (!pageReady.current) {
+      pageReady.current = true
+      return
+    }
+    mainRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [page])
+
+  useEffect(() => {
+    if (booting || results.length === 0) return
+    if (filters.page > totalPages) {
+      applyFilters({ ...filters, q: queryDraft, page: totalPages })
+    }
+  }, [booting, filters, queryDraft, results.length, totalPages, applyFilters])
 
   function clearFilters() {
     setQueryDraft('')
@@ -140,10 +194,9 @@ function Category() {
       price: 'all',
       availability: 'all',
       sort: filters.sort,
+      page: 1,
     })
   }
-
-  const countLabel = results.length === 1 ? '1 product' : `${results.length} products`
 
   const crumbs = (
     <nav className="category__crumbs" aria-label="Breadcrumb">
@@ -163,7 +216,7 @@ function Category() {
 
   if (!category) {
     return (
-      <section className="shop category" aria-labelledby="category-heading">
+      <section className="shop shop--market category" aria-labelledby="category-heading">
         <span className="shop__grain" aria-hidden="true" />
         <header className="shop__intro">
           <div className="shop__container">
@@ -184,7 +237,7 @@ function Category() {
   }
 
   return (
-    <section className={`shop category category--${accent}`} aria-labelledby="category-heading">
+    <section className="shop shop--market category" aria-labelledby="category-heading">
       <span className="shop__grain" aria-hidden="true" />
 
       <header className="shop__intro">
@@ -194,42 +247,81 @@ function Category() {
 
         <div className="shop__container shop__intro-grid">
           <div className="shop__intro-copy">
-            <p className="shop__eyebrow">{category.name}</p>
+            <p className="shop__eyebrow">{house?.name ?? 'Shop'}</p>
             <h1 id="category-heading" className="shop__title">
-              {splitHeadline(HEADLINE)}
+              {category.name}
             </h1>
-            <p className="shop__note">
-              <span>{house?.kicker ?? 'From the house'}</span>
-              <svg viewBox="0 0 168 14" fill="none" aria-hidden="true">
-                <path
-                  d="M2.4 9.6c18.8-4.8 36.2 2.8 55.1.4 16.6-2.1 31.8-6.6 48.4-4.2 14.2 2 27.6 5.8 42.6 2.4 7.4-1.7 14.2-4.2 17.8-1.6"
-                  stroke="currentColor"
-                  strokeWidth="1.4"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </p>
           </div>
 
           <div className="shop__intro-aside">
             <p className="shop__copy">{category.description}</p>
-            <p className="shop__meta">
-              {countLabel}
-              <span aria-hidden="true"> · </span>
-              {house?.name}
-            </p>
-            <figure className="category__still">
-              <img src={category.image} alt="" />
-              <figcaption>{category.name}</figcaption>
-            </figure>
+            <p className="shop__meta">{catalogMeta}</p>
           </div>
         </div>
+
+        <div className="shop__container">
+          <nav className="shop__houses category__rail" aria-label="Categories in this house">
+            <Link to="/shop" className="shop__house">
+              All
+            </Link>
+            {siblings.map((item) => (
+              <Link
+                key={item.id}
+                to={item.to}
+                className={`shop__house${item.slug === category.slug ? ' is-active' : ''}`}
+                aria-current={item.slug === category.slug ? 'page' : undefined}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        <div className="shop__container">
+          <label className="shop__mobile-search" htmlFor="category-mobile-search">
+            <span>Search products</span>
+            <input
+              id="category-mobile-search"
+              type="search"
+              placeholder={searchPlaceholder}
+              value={queryDraft}
+              onChange={(event) => setQueryDraft(event.target.value)}
+              autoComplete="off"
+            />
+          </label>
+        </div>
       </header>
+
+      <div className="shop__dock" aria-label="Category controls">
+        <button
+          type="button"
+          className="shop__dock-btn"
+          aria-haspopup="dialog"
+          aria-expanded={sheet === 'filters'}
+          onClick={() => setSheet('filters')}
+        >
+          <FilterIcon />
+          Filter{activeCount ? ` · ${activeCount}` : ''}
+        </button>
+        <button
+          type="button"
+          className="shop__dock-btn"
+          aria-haspopup="dialog"
+          aria-expanded={sheet === 'sort'}
+          onClick={() => setSheet('sort')}
+        >
+          <SortIcon />
+          Sort
+        </button>
+        <p className="shop__dock-count" aria-live="polite">
+          {results.length ? `${rangeStart}–${rangeEnd} of ${results.length}` : countLabel}
+        </p>
+      </div>
 
       <div className="shop__container shop__layout">
         <aside className="shop__sidebar" aria-label="Product filters">
           <div className="shop__sidebar-head">
-            <p className="shop__sidebar-title">Filter</p>
+            <p className="shop__sidebar-title">Filters</p>
             {activeCount ? (
               <button type="button" className="shop__text-btn" onClick={clearFilters}>
                 Clear all
@@ -242,72 +334,39 @@ function Category() {
             onSearch={setQueryDraft}
             onChange={handleFilterChange}
             idPrefix="category"
+            showStorefront={false}
             lockedCategory
             searchPlaceholder={searchPlaceholder}
           />
         </aside>
 
-        <div className="shop__main">
+        <div className="shop__main" ref={mainRef}>
           <div className="shop__toolbar">
-            <label className="shop__search-wrap shop__search-wrap--mobile" htmlFor="category-mobile-search">
-              <span className="sr-only">Search {category.name}</span>
-              <input
-                id="category-mobile-search"
-                type="search"
-                className="shop-filters__search"
-                placeholder={searchPlaceholder}
-                value={queryDraft}
-                onChange={(event) => setQueryDraft(event.target.value)}
-                autoComplete="off"
-              />
-            </label>
-
             <p className="shop__count" aria-live="polite">
-              {loading ? 'Finding products…' : countLabel}
+              {results.length
+                ? `Showing ${rangeStart}–${rangeEnd} of ${results.length}`
+                : countLabel}
             </p>
 
-            <div className="shop__toolbar-actions">
-              <label className="shop__sort-desktop" htmlFor="category-sort">
-                <span>Sort by</span>
-                <select
-                  id="category-sort"
-                  value={filters.sort}
-                  onChange={(event) =>
-                    applyFilters({ ...filters, q: queryDraft, sort: event.target.value })
-                  }
-                >
-                  {sortOptions.map((option) => (
-                    <option key={option.id} value={option.id}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <button
-                type="button"
-                className="shop__chip-btn"
-                aria-haspopup="dialog"
-                aria-expanded={sheet === 'filters'}
-                onClick={() => setSheet('filters')}
+            <label className="shop__sort" htmlFor="category-sort">
+              <span>Sort by</span>
+              <select
+                id="category-sort"
+                value={filters.sort}
+                onChange={(event) => handleFilterChange({ ...filters, sort: event.target.value })}
               >
-                Filter{activeCount ? ` · ${activeCount}` : ''}
-              </button>
-              <button
-                type="button"
-                className="shop__chip-btn"
-                aria-haspopup="dialog"
-                aria-expanded={sheet === 'sort'}
-                onClick={() => setSheet('sort')}
-              >
-                Sort
-              </button>
-            </div>
+                {sortOptions.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
 
-          {loading ? (
-            <ul className="shop__grid category__grid" aria-busy="true" aria-label="Loading products">
-              {Array.from({ length: 6 }, (_, index) => (
+          {booting ? (
+            <ul className="shop__grid" aria-busy="true" aria-label="Loading products">
+              {Array.from({ length: 9 }, (_, index) => (
                 <li key={index}>
                   <ProductSkeleton />
                 </li>
@@ -343,27 +402,54 @@ function Category() {
                 </p>
               ) : null}
 
-              <ul className="shop__grid category__grid" aria-label={`${category.name} products`}>
-                {shown.map((product) => (
+              <ul className="shop__grid" key={`${slug}-${searchParams.toString()}`} aria-label={`${category.name} products`}>
+                {shown.map((product, index) => (
                   <li key={product.id}>
-                    <ProductCard product={product} />
+                    <ShopProduct product={product} index={index} />
                   </li>
                 ))}
               </ul>
 
               <div className="shop__footer">
                 <p className="shop__shown">
-                  Showing {shown.length} of {results.length}
+                  Showing {rangeStart}–{rangeEnd} of {results.length}
                 </p>
-                {shown.length < results.length ? (
-                  <button
-                    type="button"
-                    className="shop__more"
-                    onClick={() => setVisible((n) => n + LISTING_PAGE_SIZE)}
-                  >
-                    Load more
-                    <Arrow />
-                  </button>
+                {totalPages > 1 ? (
+                  <nav className="shop__pager" aria-label="Product pages">
+                    <button
+                      type="button"
+                      className="shop__page shop__page--dir"
+                      disabled={page <= 1}
+                      onClick={() => setPage(page - 1)}
+                    >
+                      Previous
+                    </button>
+                    {pages.map((item) =>
+                      typeof item === 'string' ? (
+                        <span key={item} className="shop__page-gap" aria-hidden="true">
+                          …
+                        </span>
+                      ) : (
+                        <button
+                          key={item}
+                          type="button"
+                          className={`shop__page${item === page ? ' is-current' : ''}`}
+                          aria-current={item === page ? 'page' : undefined}
+                          onClick={() => setPage(item)}
+                        >
+                          {item}
+                        </button>
+                      ),
+                    )}
+                    <button
+                      type="button"
+                      className="shop__page shop__page--dir"
+                      disabled={page >= totalPages}
+                      onClick={() => setPage(page + 1)}
+                    >
+                      Next
+                    </button>
+                  </nav>
                 ) : null}
               </div>
             </>
@@ -373,7 +459,7 @@ function Category() {
 
       <ShopSheet
         open={sheet === 'filters'}
-        title="Filter"
+        title="Filters"
         labelledBy="category-filter-sheet"
         onClose={() => setSheet(null)}
       >
@@ -391,6 +477,7 @@ function Category() {
           onSearch={setQueryDraft}
           onChange={handleFilterChange}
           idPrefix="category-sheet"
+          showStorefront={false}
           lockedCategory
           searchPlaceholder={searchPlaceholder}
         />
@@ -405,13 +492,16 @@ function Category() {
         <p className="shop__sheet-current">Current · {sortLabel}</p>
         <div className="shop-filters__choices">
           {sortOptions.map((option) => (
-            <label key={option.id} className="shop-filters__choice shop-filters__choice--row">
+            <label
+              key={option.id}
+              className={`shop-filters__choice shop-filters__choice--row${filters.sort === option.id ? ' is-selected' : ''}`}
+            >
               <input
                 type="radio"
                 name="category-sheet-sort"
                 checked={filters.sort === option.id}
                 onChange={() => {
-                  applyFilters({ ...filters, q: queryDraft, sort: option.id })
+                  applyFilters({ ...filters, q: queryDraft, sort: option.id, page: 1 })
                   setSheet(null)
                 }}
               />

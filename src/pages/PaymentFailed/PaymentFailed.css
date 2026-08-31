@@ -1,0 +1,296 @@
+.fail {
+  --fail-bg: #f9f9f9;
+  --fail-card: #ffffff;
+  --fail-on: #1a1c1c;
+  --fail-muted: #444839;
+  --fail-primary: #4a6400;
+  --fail-primary-hover: #384e00;
+  --fail-error: #ba1a1a;
+  --fail-error-soft: rgba(255, 218, 214, 0.3);
+  --fail-outline: #c5c8b5;
+  --fail-sheet: #f9f9f9;
+  --fail-shadow: 0 10px 30px rgba(44, 44, 44, 0.05);
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  background: var(--fail-bg);
+  color: var(--fail-on);
+  padding: 96px 20px calc(64px + var(--safe-bottom));
+}
+
+.fail a {
+  text-decoration: none;
+}
+
+.fail__glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(800px, 140vw);
+  height: min(800px, 140vw);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #f3f3f3;
+  opacity: 0.5;
+  filter: blur(64px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.fail__brand {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  margin: 0;
+  padding: 32px 20px;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 32px;
+  letter-spacing: 0.02em;
+  color: var(--fail-primary);
+  text-align: center;
+}
+
+.fail__card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: var(--fail-card);
+  border: 1px solid rgba(197, 200, 181, 0.2);
+  border-radius: 24px;
+  box-shadow: var(--fail-shadow);
+  padding: 32px;
+}
+
+.fail__icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 24px;
+  border-radius: 50%;
+  background: var(--fail-error-soft);
+  color: var(--fail-error);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fail__icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+.fail__title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 40px;
+  color: var(--fail-on);
+  margin-bottom: 16px;
+}
+
+.fail__lede {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 28px;
+  color: var(--fail-muted);
+  max-width: 28rem;
+  margin-bottom: 40px;
+}
+
+.fail__sheet {
+  width: 100%;
+  text-align: left;
+  background: var(--fail-sheet);
+  border: 1px solid rgba(197, 200, 181, 0.3);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 40px;
+}
+
+.fail__sheet h2 {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--fail-muted);
+  margin: 0 0 16px;
+}
+
+.fail__sheet dl {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fail__sheet dl > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(197, 200, 181, 0.1);
+}
+
+.fail__sheet dl > div:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.fail__sheet dt {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--fail-muted);
+}
+
+.fail__sheet dd {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: var(--fail-on);
+  text-align: right;
+}
+
+.fail__sheet dd.fail__amount {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.fail__sheet dd.fail__status {
+  color: var(--fail-error);
+}
+
+.fail__actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.fail__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 56px;
+  padding: 16px 32px;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease;
+}
+
+.fail .fail__btn--solid {
+  border: 0;
+  background: var(--fail-primary);
+  color: #fff;
+}
+
+.fail .fail__btn--solid:hover {
+  background: var(--fail-primary-hover);
+  color: #fff;
+}
+
+.fail .fail__btn--ghost {
+  border: 2px solid var(--fail-primary);
+  background: transparent;
+  color: var(--fail-primary);
+}
+
+.fail .fail__btn--ghost:hover {
+  background: rgba(74, 100, 0, 0.05);
+}
+
+.fail__help {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--fail-muted);
+}
+
+.fail__help svg {
+  flex-shrink: 0;
+}
+
+.fail__help a {
+  color: var(--fail-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.fail__help a:hover {
+  color: rgba(74, 100, 0, 0.8);
+}
+
+.fail :focus-visible {
+  outline: 2px solid var(--fail-primary);
+  outline-offset: 3px;
+}
+
+@media (min-width: 768px) {
+  .fail {
+    padding: 120px 80px;
+  }
+
+  .fail__brand {
+    font-size: 32px;
+    line-height: 40px;
+    padding: 32px 80px;
+  }
+
+  .fail__card {
+    padding: 48px;
+  }
+
+  .fail__title {
+    font-size: 48px;
+    line-height: 56px;
+  }
+
+  .fail__actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .fail__btn {
+    width: auto;
+    min-width: 220px;
+  }
+}

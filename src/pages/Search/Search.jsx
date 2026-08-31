@@ -14,8 +14,8 @@ import {
 } from '../../data/shop.js'
 import { storefronts } from '../../data/storefronts.js'
 import ShopFilters from '../Shop/ShopFilters.jsx'
+import ShopProduct from '../Shop/ShopProduct.jsx'
 import ShopSheet from '../Shop/ShopSheet.jsx'
-import SearchProduct from './SearchProduct.jsx'
 import '../Shop/Shop.css'
 import './Search.css'
 
@@ -38,6 +38,33 @@ function SearchIcon() {
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.7" />
       <path d="M16.2 16.2 20 20" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function FilterIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M2.5 3.5h11M4.5 8h7M6.5 12.5h3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+function SortIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M4 5.5 6.5 3 9 5.5M6.5 3v10M12 10.5 9.5 13 7 10.5M9.5 13V3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   )
 }
@@ -74,9 +101,7 @@ function Search() {
   const [queryDraft, setQueryDraft] = useState(filters.q)
   const [sheet, setSheet] = useState(null)
   const [visible, setVisible] = useState(PAGE_SIZE)
-  const [loading, setLoading] = useState(false)
   const inputRef = useRef(null)
-  const firstLoad = useRef(true)
 
   const results = useMemo(() => queryShop(filters), [filters])
   const shown = results.slice(0, visible)
@@ -147,14 +172,16 @@ function Search() {
   }, [filters.q])
 
   useEffect(() => {
-    setVisible(PAGE_SIZE)
-    if (firstLoad.current) {
-      firstLoad.current = false
-      return undefined
-    }
-    setLoading(true)
-    const timer = window.setTimeout(() => setLoading(false), 240)
+    const timer = window.setTimeout(() => {
+      if (queryDraft.trim() === filters.q) return
+      applyFilters({ ...filters, q: queryDraft })
+    }, 220)
+
     return () => window.clearTimeout(timer)
+  }, [queryDraft, filters, applyFilters])
+
+  useEffect(() => {
+    setVisible(PAGE_SIZE)
   }, [searchParams])
 
   const countLabel =
@@ -186,18 +213,18 @@ function Search() {
 
           <Reveal className="search__field-wrap" delay={80}>
             <form className="search__bar" role="search" onSubmit={submitSearch}>
+              <label className="search__mobile-label" htmlFor="search-query">
+                Search products
+              </label>
               <span className="search__bar-icon" aria-hidden="true">
                 <SearchIcon />
               </span>
-              <label className="sr-only" htmlFor="search-query">
-                Search products
-              </label>
               <input
                 ref={inputRef}
                 id="search-query"
                 type="search"
                 value={queryDraft}
-                placeholder="Try Karuppu Kavuni, thokku, or vetiver soap"
+                placeholder="Search rice, pickles, soaps…"
                 autoComplete="off"
                 onChange={(event) => setQueryDraft(event.target.value)}
               />
@@ -223,6 +250,7 @@ function Search() {
           aria-expanded={sheet === 'filters'}
           onClick={() => setSheet('filters')}
         >
+          <FilterIcon />
           Filter{activeCount ? ` · ${activeCount}` : ''}
         </button>
         <button
@@ -232,6 +260,7 @@ function Search() {
           aria-expanded={sheet === 'sort'}
           onClick={() => setSheet('sort')}
         >
+          <SortIcon />
           Sort
         </button>
         <p className="search__dock-count">{countLabel}</p>
@@ -292,31 +321,20 @@ function Search() {
             </div>
           ) : null}
 
-          {loading ? (
-            <ul className="search__grid" aria-busy="true" aria-label="Loading products">
-              {Array.from({ length: Math.min(6, Math.max(shown.length, 3)) }, (_, index) => (
-                <li key={index} className="search-skel" aria-hidden="true">
-                  <span className="search-skel__media" />
-                  <span className="search-skel__line search-skel__line--type" />
-                  <span className="search-skel__line search-skel__line--name" />
-                  <span className="search-skel__line search-skel__line--price" />
-                </li>
-              ))}
-            </ul>
-          ) : results.length === 0 ? (
+          {results.length === 0 ? (
             <div className="search__empty">
-              <p className="search__empty-kicker">Nothing found</p>
-              <h2>We couldn’t find that goodness just yet.</h2>
+              <p className="search__empty-kicker">No matches</p>
+              <h2>We couldn’t find what you’re looking for.</h2>
               <p>
                 {queryLabel
-                  ? `“${queryLabel}” isn’t in the catalogue right now. Try another word, or wander the houses.`
-                  : 'Try a product name — or explore everything we keep on the shelves.'}
+                  ? `No products match “${queryLabel}”. Try another word, or browse the full shop.`
+                  : 'Enter a product name, or browse everything in the shop.'}
               </p>
               <div className="search__empty-actions">
-                <button type="button" className="search__text-cta" onClick={clearSearch}>
+                <button type="button" className="search__empty-btn" onClick={clearSearch}>
                   Clear search
                 </button>
-                <Link to="/shop" className="search__text-cta">
+                <Link to="/shop" className="search__ghost-btn">
                   Explore all products
                   <Arrow />
                 </Link>
@@ -324,11 +342,10 @@ function Search() {
             </div>
           ) : (
             <>
-              <p className="search__aside-note">Goodness, found.</p>
-              <ul className="search__grid">
+              <ul className="shop__grid">
                 {shown.map((product, index) => (
-                  <li key={product.id} style={{ '--i': index }}>
-                    <SearchProduct product={product} index={index} />
+                  <li key={product.id}>
+                    <ShopProduct product={product} index={index} />
                   </li>
                 ))}
               </ul>
@@ -338,7 +355,7 @@ function Search() {
                   Showing {shown.length} of {results.length}
                 </p>
                 {shown.length < results.length ? (
-                  <button type="button" className="search__text-cta" onClick={() => setVisible((n) => n + PAGE_SIZE)}>
+                  <button type="button" className="search__empty-btn" onClick={() => setVisible((n) => n + PAGE_SIZE)}>
                     Load more
                     <Arrow />
                   </button>
