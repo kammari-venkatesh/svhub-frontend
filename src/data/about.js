@@ -17,7 +17,8 @@ function grain(id, note) {
 export const aboutHero = {
   eyebrow: 'Rooted in SV Hub',
   title: 'Rooted in Tradition, Built for Modern Life.',
-  copy: 'Organic food and natural self-care from Coimbatore — grown with care, made by familiar hands, and meant for everyday homes.',
+  copy: 'Organic staples and natural self-care from Coimbatore — grown with care, made for modern homes.',
+  cta: 'Explore our story',
   image: images.hero,
   imageAlt: 'Green farmland stretching toward the horizon',
 }
@@ -31,7 +32,8 @@ export const aboutStorySteps = [
 ]
 
 export const aboutIntro = {
-  eyebrow: 'Who We Are',
+  eyebrow: 'OUR ROOTS',
+  chapterNum: '01',
   title: 'A house of native goodness, from Coimbatore.',
   paragraphs: [
     'SV Hub (Sadhguru Veera’s) is an organic food and natural self-care brand rooted in Tamil Nadu. We reconnect modern households with traditional Indian food and handmade care — native grains, authentic masalas, small-batch thokku, sweets, savouries, daily meals and herbal soaps.',
@@ -46,6 +48,7 @@ export const aboutChapters = [
   {
     id: 'farm',
     number: '02',
+    eyebrow: 'FROM FARM TO HOME',
     title: 'From Farm to Home',
     copy: 'We source directly from farmers who still grow indigenous grains with patience and respect for the land. Each staple is packed in Coimbatore, so you can follow the path from field to kitchen — who grew it, how it was prepared, and why it belongs on an everyday table.',
     image: images.farmer,
@@ -55,6 +58,7 @@ export const aboutChapters = [
   {
     id: 'pure',
     number: '03',
+    eyebrow: 'PURE BY NATURE',
     title: 'Pure by Nature',
     copy: 'We keep recipes close to the way they are made at home. Native rice stays unpolished. Thokku is slow-cooked in small batches. Soaps are handmade with familiar botanicals. No exaggerated claims — only natural, preservative-free products prepared with traditional methods.',
     image: images.ingredients,
@@ -64,6 +68,7 @@ export const aboutChapters = [
   {
     id: 'sustain',
     number: '04',
+    eyebrow: 'SUSTAINABLE LIVING',
     title: 'Sustainable Living',
     copy: 'Goodness should leave the land better than it found it. We choose growers who honour soil and season, pack with care, and keep our practices eco-conscious — so the food on your plate and the soap on your skin support the farms and homes they come from.',
     image: images.farmland,
@@ -118,9 +123,9 @@ export const aboutGrains = {
 export const aboutClose = {
   eyebrow: 'Taste of Tradition',
   title: 'Bring native goodness home.',
-  copy: 'Explore organic staples, traditional recipes and handmade self-care — packed in Coimbatore for modern kitchens.',
+  copy: 'Explore organic staples, traditional recipes and handmade care rooted in our traditions.',
   cta: 'Explore our products',
   ctaTo: '/shop',
-  image: images.farmland,
+  image: images.authKitchen,
   imageAlt: '',
 }

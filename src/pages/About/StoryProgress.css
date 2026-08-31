@@ -30,7 +30,8 @@
 
 .story-rail__sticky {
   position: sticky;
-  top: max(calc(var(--nav-height, 84px) + 16px), calc(50vh - 280px));
+  top: 50%;
+  transform: translateY(-50%);
   height: 560px;
   display: flex;
   flex-direction: column;
@@ -232,6 +233,7 @@
   from {
     transform: scale(0.85);
   }
+
   to {
     transform: scale(1);
   }
@@ -242,6 +244,7 @@
     transform: scale(0.5);
     opacity: 0;
   }
+
   to {
     transform: scale(1);
     opacity: 1;
@@ -346,6 +349,7 @@
     opacity: 0;
     transform: translateX(-4px);
   }
+
   to {
     opacity: 1;
     transform: none;
@@ -357,6 +361,7 @@
    ================================================== */
 
 @media (prefers-reduced-motion: reduce) {
+
   .story-rail__dot,
   .story-rail__label,
   .story-rail__num,
